@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QCI & AI 資料收集互動實驗室</title>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  
+<!-- 引入 CSS 檔 -->
+<link rel="stylesheet" href="Data-Collection-tool_style.css">
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>QCI & AI 資料模型蒐集小工具</h1>
+  </header>
+
+  <!-- 第0步：全域嚴格檢驗區塊 -->
+  <div class="card global-card">
+    <div style="flex: 1; min-width: 250px;">
+      <label>👤 第0步 - 你的名字 (Your Name):</label>
+      <input type="text" id="userName" placeholder="請輸入您的名字">
+    </div>
+    <div style="width: 120px;">
+      <label>⚖️ v1 權重:</label>
+      <input type="number" step="0.1" id="weightV1" value="0.3" oninput="calcHEGAI()">
+      <div class="weight-note">以圖為主</div>
+    </div>
+    <div style="width: 120px;">
+      <label>⚖️ v2 權重:</label>
+      <input type="number" step="0.1" id="weightV2" value="0.7" oninput="calcHEGAI()">
+      <div class="weight-note">以文字為主</div>
+    </div>
+  </div>
+
+  <input type="hidden" id="editingIndex" value="-1">
+
+  <div class="tabs">
+    <div class="tab-btn active" id="btn-tab1">Part 1: 語音輸入 與 產生圖片</div>
+    <div class="tab-btn" id="btn-tab2">Part 2: 圖片轉文字 與 人類評分</div>
+    <div class="tab-btn" id="btn-tab3">Part 3: 文字生成圖片 與 人類評分</div>
+    <div class="tab-btn" id="btn-tab4">已收集資料模型清單 <span id="tabListCount" class="counter-badge">0</span></div>
+  </div>
+
+  <!-- Part 1 -->
+  <div id="tab-part1" class="card tab-pane active">
+    <div class="card-title"><span class="badge">Part 1</span> KWS AI識別文字與人類評估參數</div>
+    
+    <p style="font-size: 0.9rem; color: #64748b; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e1;">
+          請前往 <a href="https://kws.oaselab.org/kws-ai/text-to-image/" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: none;">KWS AI (Text/Voice to Image)</a> 進行語音輸入並生成圖片。下載圖片後，將結果與評估參數記錄於下方：
+        </p>
+    
+    <div class="form-group">
+      <label>Chinese (中文語句):</label>
+      <input type="text" id="chinese" placeholder="例如：媽媽說我美">
+    </div>
+    <div class="form-group">
+      <label>Translated English Text (翻譯英文句子):</label>
+      <input type="text" id="engText" placeholder="例如：Mom say I'm beautiful">
+    </div>
+    <div class="form-group">
+      <label>Generated Image (上傳第一張生成圖片 - 圖1):</label>
+      <input type="file" id="genImageInput" accept="image/*" onchange="handleImage(this, 'prev1', 'currImg1')">
+      <img id="prev1" class="img-preview" alt="圖1預覽">
+    </div>
+    
+    <div class="form-group">
+      <label>Distance (拍攝距離評估，0-255 cm):</label>
+      <div class="slider-row">
+        <input type="range" id="distanceRange" min="0" max="255" value="127" oninput="syncInput('distanceRange', 'distance')">
+        <input type="number" id="distance" class="val-input" min="0" max="255" value="" placeholder="未定" oninput="syncInput('distance', 'distanceRange')">
+        <span class="unit-text">cm</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Light (環境亮度評估，0-4000 lux):</label>
+      <div class="slider-row">
+        <input type="range" id="lightRange" min="0" max="4000" step="1" value="2000" oninput="syncInput('lightRange', 'light')">
+        <input type="number" id="light" class="val-input" min="0" max="4000" value="" placeholder="未定" oninput="syncInput('light', 'lightRange')">
+        <span class="unit-text">lux</span>
+      </div>
+    </div>
+    
+    <div id="part1Msg" class="msg-box"></div>
+    <div class="actions">
+      <button class="btn-secondary" id="cancelPart1Btn" style="flex: 1; display: none;" onclick="cancelToTab4()">⬅️ 取消新增，返回清單</button>
+      <button class="btn-primary" style="flex: 2;" onclick="goToPart2()">下一步：前往 Part 2 ➡️</button>
+    </div>
+  </div>
+
+  <!-- Part 2 -->
+  <div id="tab-part2" class="card tab-pane">
+    <div class="card-title"><span class="badge">Part 2</span> 圖片生成與 GAIText 描述評估</div>
+    
+    <p style="font-size: 0.9rem; color: #64748b; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e1;">
+      請前往 <a href="https://kws.oaselab.org/kws-ai/image-to-text/" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: none;">KWS AI (Image to Text/Voice)</a>，上傳剛剛生成的"圖1"，使用模型 (如 Llama 3.2 ) 生成描述文字，並針對圖片與文字的匹配度進行人類評分：
+    </p>
+
+    <div class="compare-panel">
+      <div class="compare-title">【對照參考】你在 Part 1 上傳的圖1</div>
+      <div style="text-align: center;">
+        <img id="part2-ref-img1" class="img-preview" style="max-height: 150px; margin: 0 auto;">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>GAIText (English) (反向生成的英文描述):</label>
+      <textarea id="gaiText" rows="2" placeholder="輸入 AI 生成的描述文字..."></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label>HEGAIText (評估 GAIText 與圖片匹配度，0-10 分):</label>
+      <div class="slider-row">
+        <input type="range" id="hegaiTextRange" min="0" max="10" step="1" value="5" oninput="syncInput('hegaiTextRange', 'hegaiText')">
+        <input type="number" id="hegaiText" class="val-input" min="0" max="10" value="" placeholder="未定" oninput="syncInput('hegaiText', 'hegaiTextRange')">
+        <span class="unit-text">分</span>
+      </div>
+    </div>
+    
+    <div id="part2Msg" class="msg-box"></div>
+    <div class="actions">
+      <button class="btn-secondary" style="flex: 1;" onclick="goBackTo('tab-part1', 'btn-tab1')">⬅️ 上一步：回 Part 1</button>
+      <button class="btn-primary" style="flex: 2;" onclick="goToPart3()">下一步：前往 Part 3 ➡️</button>
+    </div>
+  </div>
+
+  <!-- Part 3 -->
+  <div id="tab-part3" class="card tab-pane">
+    <div class="card-title"><span class="badge">Part 3</span> GAIImage 與 HEGAI 加權評分</div>
+
+    <p style="font-size: 0.9rem; color: #64748b; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e1;">
+      請再次前往 <a href="https://kws.oaselab.org/kws-ai/text-to-image/" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: none;">KWS AI (Text/Voice to Image)</a>，輸入 Part 2 產生的 GAIText 來生成全新的「圖2」，上傳後進行最終的交叉對照與人類評分：
+    </p>
+    
+    <div class="form-group" style="background: #f1f5f9; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+      <label>GAIImage (English) (使用 Part 2 的 GAIText 生成的新圖片 - 圖2):</label>
+      <input type="file" id="gaiImageInput" accept="image/*" onchange="handleImage(this, 'prev2', 'currImg2')">
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-title">比較 1：【圖1】 對決 【圖2】</div>
+      <div class="compare-row">
+        <div class="compare-item">
+          <span>Part 1 的圖1</span>
+          <img id="part3-ref-img1" class="img-preview" style="display:block;">
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="compare-item">
+          <span>剛上傳的圖2</span>
+          <img id="part3-ref-img2-v1" class="img-preview">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 12px;">
+        <label>HEGAIImage_v1 (評估兩張圖片匹配度，0-10 分):</label>
+        <div class="slider-row">
+          <input type="range" id="v1Range" min="0" max="10" step="1" value="5" oninput="syncInput('v1Range', 'v1', true)">
+          <input type="number" id="v1" class="val-input" min="0" max="10" value="" placeholder="未定" oninput="syncInput('v1', 'v1Range', true)">
+          <span class="unit-text">分</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-title">比較 2：【GAIText 句子】 對決 【圖2】</div>
+      <div class="compare-row">
+        <div class="compare-item">
+          <span>Part 2 的描述句</span>
+          <div id="part3-ref-text" class="compare-text-box">（尚未輸入文字）</div>
+        </div>
+        <div class="vs-badge">VS</div>
+        <div class="compare-item">
+          <span>剛上傳的圖2</span>
+          <img id="part3-ref-img2-v2" class="img-preview">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 12px;">
+        <label>HEGAIImage_v2 (評估圖片與文字描述匹配度，0-10 分):</label>
+        <div class="slider-row">
+          <input type="range" id="v2Range" min="0" max="10" step="1" value="5" oninput="syncInput('v2Range', 'v2', true)">
+          <input type="number" id="v2" class="val-input" min="0" max="10" value="" placeholder="未定" oninput="syncInput('v2', 'v2Range', true)">
+          <span class="unit-text">分</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="calc-box">
+      <span>HEGAIImage 加權最終得分</span>
+      <div class="score" id="hegaiFinal">--</div>
+    </div>
+    
+    <div id="actionMsg" class="msg-box"></div>
+    <div class="actions">
+      <button class="btn-secondary" style="flex: 1;" onclick="goBackTo('tab-part2', 'btn-tab2')">⬅️ 上一步：回 Part 2</button>
+      <button class="btn-add" id="submitBtn" style="flex: 2;" onclick="saveRecord()">💾 儲存並前往收集清單</button>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div id="tab-list" class="card tab-pane">
+    <div class="card-title">
+      已收集清單
+      <span class="counter-badge" id="listCount">0 筆</span>
+    </div>
+
+    <p style="font-size: 0.9rem; color: #64748b; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 1px dashed #cbd5e1;">
+      您可以在此確認、編輯或刪除所有已暫存的資料模型。完成收集後，請點擊下方按鈕將完整結果匯出為 Excel 檔案。
+    </p>
+
+
+    <div class="preview-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>序號</th>
+            <th>Generated Image</th>
+            <th>Chinese</th>
+            <th>Translated English</th>
+            <th>Distance</th>
+            <th>Light</th>
+            <th>GAIText</th>
+            <th>HEGAIText</th>
+            <th>GAIImage</th>
+            <th>v1</th>
+            <th>v2</th>
+            <th>HEGAIImage</th>
+          </tr>
+        </thead>
+        <tbody id="recordTableBody">
+          <tr><td colspan="13" style="text-align:center; color:#94a3b8;">目前尚無已暫存的資料</td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div id="exportMsg" class="msg-box"></div>
+    <div class="actions" style="margin-top: 16px;">
+      <button class="btn-add" style="flex: 1;" onclick="startNewRecord()">＋ 繼續收集下一筆資料</button>
+      <button class="btn-primary" id="exportBtn" style="flex: 1;" onclick="exportAllXLSX()">⬇️ 批次匯出全部資料 (.xlsx)</button>
+    </div>
+  </div>
+</div>
+
+<!-- 引入 JS 檔 -->
+<script src="Data-Collection-tool_script.js"></script>
+
+</body>
+</html>
