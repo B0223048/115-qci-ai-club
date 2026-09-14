@@ -83,7 +83,7 @@ function goToPart2() {
     return;
   }
   if (!currentImg1) {
-    showNotice('part1Msg', '⚠️ 請先上傳第一張生成圖片 (Generated Image)！', true);
+    showNotice('part1Msg', '⚠️ 請先上傳第1張生成圖片 (Generated Image)！', true);
     return;
   }
   if (document.getElementById('distance').value === '' || document.getElementById('light').value === '') {
@@ -196,7 +196,7 @@ function saveRecord() {
   const currentImg2 = currentImages.currImg2 || (editingIdx !== -1 ? records[editingIdx].img2 : null);
 
   if (!currentImg1 || !currentImg2) {
-    showNotice('actionMsg', '⚠️ 請完成兩張圖片的上傳後再新增！', true);
+    showNotice('actionMsg', '⚠️ 請完成第2張圖片的上傳後再新增！', true);
     return;
   }
   
