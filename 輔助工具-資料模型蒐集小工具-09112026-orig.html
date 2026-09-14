@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QCI & AI 資料收集互動實驗室</title>
+  <!-- 引入 Excel 生成套件 -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --success-hover: #15803d;
+      --warning: #ca8a04;
+      --danger: #dc2626;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 12px;
+    }
+    .container {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 4px 0;
+      color: #0f172a;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      background: var(--primary);
+      color: white;
+      font-size: 0.75rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .weight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px dashed var(--border);
+      margin-bottom: 14px;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    input[type="range"] {
+      flex: 1;
+    }
+    .val-display {
+      min-width: 65px;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: right;
+      font-size: 0.9rem;
+    }
+    .img-preview {
+      max-height: 100px;
+      max-width: 100%;
+      object-fit: contain;
+      margin-top: 6px;
+      border-radius: 4px;
+      display: none;
+      border: 1px solid var(--border);
+      background: #f1f5f9;
+    }
+    .calc-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calc-box span {
+      font-weight: 600;
+      color: #1e40af;
+      font-size: 0.9rem;
+    }
+    .calc-box .score {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 11px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-add { background: var(--success); color: white; }
+    .btn-add:hover { background: var(--success-hover); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-edit { background: #fef08a; color: #854d0e; padding: 3px 6px; font-size: 0.75rem; border-radius: 4px; margin-right: 2px; }
+    .btn-danger { background: #fee2e2; color: var(--danger); padding: 3px 6px; font-size: 0.75rem; border-radius: 4px; }
+    
+    .msg-box {
+      display: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    .msg-error { background: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+    .msg-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+    .preview-table-container {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    th { background: #f1f5f9; white-space: nowrap; }
+    .counter-badge {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>QCI & AI 資料模型蒐集小工具</h1>
+  </header>
+
+  <input type="hidden" id="editingIndex" value="-1">
+
+  <!-- Part 1 -->
+  <div class="card">
+    <div class="card-title"><span class="badge">Part 1</span> 文字輸入與環境參數</div>
+    <div class="form-group">
+      <label>Chinese (中文語句):</label>
+      <input type="text" id="chinese" placeholder="例如：媽媽說我美">
+    </div>
+    <div class="form-group">
+      <label>Translated English Text (翻譯英文句子):</label>
+      <input type="text" id="engText" placeholder="例如：Mom say I'm beautiful">
+    </div>
+<div class="form-group">
+      <label>Generated Image (上傳第一張生成圖片):</label>
+      <input type="file" id="genImageInput" accept="image/*" onchange="handleImage(this, 'prev1', 'currImg1')">
+      <img id="prev1" class="img-preview" alt="圖1預覽">
+    </div>
+    <div class="form-group">
+      <label>Distance (拍攝距離評估，0-255 cm):</label>
+      <div class="slider-row">
+        <input type="range" id="distance" min="0" max="255" value="50" oninput="document.getElementById('distanceVal').innerText = this.value + ' cm'">
+        <span class="val-display" id="distanceVal">50 cm</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Light (環境亮度評估，0-4000 lux):</label>
+      <div class="slider-row">
+        <input type="range" id="light" min="0" max="4000" step="50" value="2000" oninput="document.getElementById('lightVal').innerText = this.value + ' lux'">
+        <span class="val-display" id="lightVal">2000 lux</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 2 -->
+  <div class="card">
+    <div class="card-title"><span class="badge">Part 2</span> 圖片生成與 GAIText 描述評估</div>
+    
+    <div class="form-group">
+      <label>GAIText (English) (反向生成的英文描述):</label>
+      <textarea id="gaiText" rows="2" placeholder="輸入 AI 生成的描述文字..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>HEGAIText (評估 GAIText 與圖片匹配度，0-10 分):</label>
+      <div class="slider-row">
+        <input type="range" id="hegaiText" min="0" max="10" step="1" value="9" oninput="document.getElementById('hegaiTextVal').innerText = this.value + ' 分'">
+        <span class="val-display" id="hegaiTextVal">9 分</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part 3 -->
+  <div class="card">
+    <div class="card-title"><span class="badge">Part 3</span> GAIImage 與 HEGAI 加權評分</div>
+    <div class="form-group">
+      <label>GAIImage (English) (使用 Translated English 生成的新圖片):</label>
+      <input type="file" id="gaiImageInput" accept="image/*" onchange="handleImage(this, 'prev2', 'currImg2')">
+      <img id="prev2" class="img-preview" alt="圖2預覽">
+    </div>
+    <div class="weight-grid">
+      <div>
+        <label>v1 權重:</label>
+        <input type="text" id="weightV1" value="0.3" oninput="calcHEGAI()">
+      </div>
+      <div>
+        <label>v2 權重:</label>
+        <input type="text" id="weightV2" value="0.7" oninput="calcHEGAI()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>HEGAIImage_v1 (評估兩張圖片匹配度，0-10 分):</label>
+      <div class="slider-row">
+        <input type="range" id="v1" min="0" max="10" step="1" value="8" oninput="calcHEGAI()">
+        <span class="val-display" id="v1Val">8 分</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>HEGAIImage_v2 (評估圖片與文字描述匹配度，0-10 分):</label>
+      <div class="slider-row">
+        <input type="range" id="v2" min="0" max="10" step="1" value="5" oninput="calcHEGAI()">
+        <span class="val-display" id="v2Val">5 分</span>
+      </div>
+    </div>
+    <div class="calc-box">
+      <span>HEGAIImage 自動計算結果</span>
+      <div class="score" id="hegaiFinal">5.9</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-add" id="submitBtn" onclick="saveRecord()">＋ 新增此筆資料至收集清單</button>
+      <div id="actionMsg" class="msg-box"></div>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="card" id="listCard">
+    <div class="card-title">
+      已收集清單
+      <span class="counter-badge" id="listCount">0 筆</span>
+    </div>
+    <div class="preview-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>序號</th>
+            <th>Generated Image</th>
+            <th>Chinese</th>
+            <th>Translated English</th>
+            <th>Distance</th>
+            <th>Light</th>
+            <th>GAIText</th>
+            <th>HEGAIText</th>
+            <th>GAIImage</th>
+            <th>v1</th>
+            <th>v2</th>
+            <th>HEGAIImage</th>
+          </tr>
+        </thead>
+        <tbody id="recordTableBody">
+          <tr><td colspan="13" style="text-align:center; color:#94a3b8;">目前尚無已暫存的資料</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="actions" style="margin-top: 14px;">
+      <button class="btn-primary" id="exportBtn" onclick="exportAllXLSX()">批次匯出全部資料至 Excel (.xlsx)</button>
+      <div id="exportMsg" class="msg-box"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let records = [];
+  let currentImages = { currImg1: null, currImg2: null };
+
+  function showNotice(elemId, text, isError = false) {
+    const box = document.getElementById(elemId);
+    box.innerText = text;
+    box.className = 'msg-box ' + (isError ? 'msg-error' : 'msg-success');
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 3500);
+  }
+
+  function handleImage(input, prevId, storeKey) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        const img = new Image();
+        img.onload = function() {
+          currentImages[storeKey] = {
+            base64: base64,
+            ext: file.type.includes('png') ? 'png' : 'jpeg',
+            width: img.naturalWidth,
+            height: img.naturalHeight
+          };
+          const prev = document.getElementById(prevId);
+          prev.src = base64;
+          prev.style.display = 'block';
+        };
+        img.src = base64;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function calculateFitDimensions(origWidth, origHeight, maxWidth, maxHeight) {
+    const ratio = Math.min(maxWidth / origWidth, maxHeight / origHeight);
+    return {
+      width: Math.round(origWidth * ratio),
+      height: Math.round(origHeight * ratio)
+    };
+  }
+
+  function calcHEGAI() {
+    const v1 = parseFloat(document.getElementById('v1').value) || 0;
+    const v2 = parseFloat(document.getElementById('v2').value) || 0;
+    const w1 = parseFloat(document.getElementById('weightV1').value) || 0;
+    const w2 = parseFloat(document.getElementById('weightV2').value) || 0;
+
+    document.getElementById('v1Val').innerText = v1 + ' 分';
+    document.getElementById('v2Val').innerText = v2 + ' 分';
+
+    const finalScore = (w1 * v1 + w2 * v2).toFixed(1);
+    document.getElementById('hegaiFinal').innerText = finalScore;
+    return finalScore;
+  }
+
+  function saveRecord() {
+    const chinese = document.getElementById('chinese').value.trim();
+    const engText = document.getElementById('engText').value.trim();
+    const editingIdx = parseInt(document.getElementById('editingIndex').value);
+
+    // 嚴格阻擋：若未填寫中文或英文，直接亮紅字擋下
+    if (!chinese || !engText) {
+      showNotice('actionMsg', '⚠️ 請務必填寫「中文語句」與「翻譯英文句子」！', true);
+      return;
+    }
+
+    const currentImg1 = currentImages.currImg1 || (editingIdx !== -1 ? records[editingIdx].img1 : null);
+    const currentImg2 = currentImages.currImg2 || (editingIdx !== -1 ? records[editingIdx].img2 : null);
+
+    // 嚴格阻擋：若未上傳圖片，提示並阻擋（若允許無圖可將此段註解）
+    if (!currentImg1 || !currentImg2) {
+      showNotice('actionMsg', '⚠️ 請完成兩張圖片的上傳後再新增！', true);
+      return;
+    }
+
+    const record = {
+      chinese: chinese,
+      engText: engText,
+      distance: Number(document.getElementById('distance').value),
+      light: Number(document.getElementById('light').value),
+      gaiText: document.getElementById('gaiText').value.trim(),
+      hegaiText: Number(document.getElementById('hegaiText').value),
+      v1: Number(document.getElementById('v1').value),
+      v2: Number(document.getElementById('v2').value),
+      finalScore: Number(calcHEGAI()),
+      img1: currentImg1,
+      img2: currentImg2
+    };
+
+    if (editingIdx === -1) {
+      records.push(record);
+      showNotice('actionMsg', '✅ 已成功新增一筆資料！', false);
+    } else {
+      records[editingIdx] = record;
+      document.getElementById('editingIndex').value = '-1';
+      document.getElementById('submitBtn').innerText = '＋ 新增此筆資料至收集清單';
+      showNotice('actionMsg', `✅ 第 ${editingIdx + 1} 筆資料已更新！`, false);
+    }
+
+    renderRecordTable();
+    resetForm();
+  }
+
+  function editRecord(index) {
+    const r = records[index];
+    document.getElementById('chinese').value = r.chinese === '（未填寫）' ? '' : r.chinese;
+    document.getElementById('engText').value = r.engText === '（未填寫）' ? '' : r.engText;
+    document.getElementById('distance').value = r.distance;
+    document.getElementById('distanceVal').innerText = r.distance + ' cm';
+    document.getElementById('light').value = r.light;
+    document.getElementById('lightVal').innerText = r.light + ' lux';
+    document.getElementById('gaiText').value = r.gaiText;
+    document.getElementById('hegaiText').value = r.hegaiText;
+    document.getElementById('hegaiTextVal').innerText = r.hegaiText + ' 分';
+    document.getElementById('v1').value = r.v1;
+    document.getElementById('v1Val').innerText = r.v1 + ' 分';
+    document.getElementById('v2').value = r.v2;
+    document.getElementById('v2Val').innerText = r.v2 + ' 分';
+    calcHEGAI();
+
+    currentImages.currImg1 = r.img1;
+    currentImages.currImg2 = r.img2;
+
+    if (r.img1) {
+      const p1 = document.getElementById('prev1');
+      p1.src = r.img1.base64;
+      p1.style.display = 'block';
+    } else {
+      document.getElementById('prev1').style.display = 'none';
+    }
+
+    if (r.img2) {
+      const p2 = document.getElementById('prev2');
+      p2.src = r.img2.base64;
+      p2.style.display = 'block';
+    } else {
+      document.getElementById('prev2').style.display = 'none';
+    }
+
+    document.getElementById('editingIndex').value = index;
+    document.getElementById('submitBtn').innerText = `💾 儲存修改 (第 ${index + 1} 筆)`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    document.getElementById('chinese').value = '';
+    document.getElementById('engText').value = '';
+    document.getElementById('gaiText').value = '';
+    document.getElementById('genImageInput').value = '';
+    document.getElementById('gaiImageInput').value = '';
+    document.getElementById('prev1').style.display = 'none';
+    document.getElementById('prev2').style.display = 'none';
+    currentImages = { currImg1: null, currImg2: null };
+    document.getElementById('editingIndex').value = '-1';
+    document.getElementById('submitBtn').innerText = '＋ 新增此筆資料至收集清單';
+  }
+
+  function deleteRecord(index) {
+    records.splice(index, 1);
+    renderRecordTable();
+    if (parseInt(document.getElementById('editingIndex').value) === index) {
+      resetForm();
+    }
+    showNotice('actionMsg', '已刪除該筆資料');
+  }
+
+  function renderRecordTable() {
+    const tbody = document.getElementById('recordTableBody');
+    document.getElementById('listCount').innerText = `${records.length} 筆`;
+
+    if (records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:#94a3b8;">目前尚無已暫存的資料</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = records.map((r, i) => `
+      <tr>
+        <td>
+          <button class="btn-edit" onclick="editRecord(${i})">編輯</button>
+          <button class="btn-danger" onclick="deleteRecord(${i})">刪除</button>
+        </td>
+        <td>${i + 1}</td>
+        <td>${r.img1 ? `<img src="${r.img1.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
+        <td>${r.chinese}</td>
+        <td>${r.engText}</td>
+        <td>${r.distance}</td>
+        <td>${r.light}</td>
+        <td style="max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.gaiText}">${r.gaiText}</td>
+        <td>${r.hegaiText}</td>
+        <td>${r.img2 ? `<img src="${r.img2.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
+        <td>${r.v1}</td>
+        <td>${r.v2}</td>
+        <td><b>${r.finalScore}</b></td>
+      </tr>
+    `).join('');
+  }
+
+  async function exportAllXLSX() {
+    if (records.length === 0) {
+      showNotice('exportMsg', '⚠️ 清單中尚無任何資料可以匯出！', true);
+      return;
+    }
+
+    const btn = document.getElementById('exportBtn');
+    btn.disabled = true;
+    btn.innerText = `正在產生 ${records.length} 筆資料之 Excel...`;
+
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('工作表1');
+
+      sheet.columns = [
+        { key: 'A', width: 32.25 },
+        { key: 'B', width: 13.0 },
+        { key: 'C', width: 13.0 },
+        { key: 'D', width: 19.75 },
+        { key: 'E', width: 18.66 },
+        { key: 'F', width: 47.08 },
+        { key: 'G', width: 22.66 },
+        { key: 'H', width: 26.25 },
+        { key: 'I', width: 15.08 },
+        { key: 'J', width: 16.66 },
+        { key: 'K', width: 15.41 }
+      ];
+
+      const mediumBorder = {
+        top: { style: 'medium', color: { argb: 'FF000000' } },
+        left: { style: 'medium', color: { argb: 'FF000000' } },
+        bottom: { style: 'medium', color: { argb: 'FF000000' } },
+        right: { style: 'medium', color: { argb: 'FF000000' } }
+      };
+
+      const headerRow = sheet.getRow(1);
+      headerRow.height = 31.0;
+      
+      const headerValues = [
+        'Generated Image',
+        'Chinese',
+        'Translated English Text',
+        'Distance',
+        'Light',
+        'GAIText (English)\n(Upload the generated image to generate description texts)',
+        'HEGAIText',
+        'GAIImage (English)\n(Use the translated English to generate a new image)',
+        'HEGAIImage_v1',
+        'HEGAIImage_v2',
+        'HEGAIImage'
+      ];
+
+      headerValues.forEach((val, idx) => {
+        const cell = headerRow.getCell(idx + 1);
+        cell.value = val;
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell.border = mediumBorder;
+
+        if ([4, 5, 7, 11].includes(idx + 1)) {
+          cell.font = { name: 'Times New Roman', size: 12, bold: true, color: { argb: 'FFC00000' } };
+        } else if ([6, 8, 9, 10].includes(idx + 1)) {
+          cell.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+        } else {
+          cell.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF000000' } };
+        }
+      });
+
+      records.forEach((rec, idx) => {
+        const rowNum = idx + 2;
+        const row = sheet.getRow(rowNum);
+        row.height = 191.25;
+
+        const cellB = row.getCell(2);
+        cellB.value = rec.chinese;
+        cellB.font = { name: '標楷體', size: 12, bold: false, color: { argb: 'FF000000' } };
+
+        const cellC = row.getCell(3);
+        cellC.value = rec.engText;
+        cellC.font = { name: 'Times New Roman', size: 12, bold: true, color: { argb: 'FF7030A0' } };
+
+        const cellD = row.getCell(4);
+        cellD.value = rec.distance;
+        cellD.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+
+        const cellE = row.getCell(5);
+        cellE.value = rec.light;
+        cellE.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+
+        const cellF = row.getCell(6);
+        cellF.value = rec.gaiText;
+        cellF.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+
+        const cellG = row.getCell(7);
+        cellG.value = rec.hegaiText;
+        cellG.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+
+        const cellI = row.getCell(9);
+        cellI.value = rec.v1;
+        cellI.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+
+        const cellJ = row.getCell(10);
+        cellJ.value = rec.v2;
+        cellJ.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+
+        const cellK = row.getCell(11);
+        cellK.value = { formula: `0.3*I${rowNum}+0.7*J${rowNum}`, result: rec.finalScore };
+        cellK.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+
+        for (let col = 1; col <= 11; col++) {
+          const c = row.getCell(col);
+          c.border = mediumBorder;
+          c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        }
+
+        const maxBoxW = 230;
+        const maxBoxH = 240;
+
+        if (rec.img1) {
+          const fit1 = calculateFitDimensions(rec.img1.width, rec.img1.height, maxBoxW, maxBoxH);
+          const imgId1 = workbook.addImage({
+            base64: rec.img1.base64,
+            extension: rec.img1.ext
+          });
+          sheet.addImage(imgId1, {
+            tl: { col: 0.05, row: (rowNum - 1) + 0.05 },
+            ext: { width: fit1.width, height: fit1.height }
+          });
+        }
+
+        if (rec.img2) {
+          const fit2 = calculateFitDimensions(rec.img2.width, rec.img2.height, maxBoxW, maxBoxH);
+          const imgId2 = workbook.addImage({
+            base64: rec.img2.base64,
+            extension: rec.img2.ext
+          });
+          sheet.addImage(imgId2, {
+            tl: { col: 7.05, row: (rowNum - 1) + 0.05 },
+            ext: { width: fit2.width, height: fit2.height }
+          });
+        }
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `DataCollectionTemplate (software)_Filled.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showNotice('exportMsg', '🎉 Excel 檔案已成功下載！');
+    } catch (err) {
+      showNotice('exportMsg', '匯出失敗：' + err.message, true);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = '批次匯出全部資料至 Excel (.xlsx)';
+    }
+  }
+</script>
+
+</body>
+</html>
