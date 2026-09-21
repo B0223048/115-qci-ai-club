@@ -1,37 +1,172 @@
+// ====================================================
+// 專案全域配置 (Single Source of Truth)
+// 往後修改預設權重、門檻或遊戲連結，只要修改這裡！
+// ====================================================
+const CONFIG = {
+  defaultTextWeight: 0.5, // 0.5 代表 55 開；0.7 代表文字 70%、圖片 30%
+  minRecordsForGame: 3,   // 解鎖小遊戲需要的筆數
+  gameUrl: 'https://kws.oaselab.org/'
+};
+
+// 執行時狀態管理
+let state = {
+  w1: Number((1.0 - CONFIG.defaultTextWeight).toFixed(2)), // 圖片權重
+  w2: Number(CONFIG.defaultTextWeight.toFixed(2))          // 文字權重
+};
+
 let records = [];
 let currentImages = { currImg1: null, currImg2: null };
 let exportCount = 0;
 
-// ----------------------------------------------------
-// 檢驗功能：第0步的「名字」與「權重」校驗
-// ----------------------------------------------------
-function validatePart0(msgElemId) {
-  const userName = document.getElementById('userName').value.trim();
-  const w1 = parseFloat(document.getElementById('weightV1').value);
-  const w2 = parseFloat(document.getElementById('weightV2').value);
+// 頁面載入完成時，以 CONFIG 為準初始化畫面
+window.addEventListener('DOMContentLoaded', () => {
+  const initialSliderVal = Math.round(CONFIG.defaultTextWeight * 100);
+  const slider = document.getElementById('weightSlider');
+  if (slider) {
+    slider.value = initialSliderVal;
+  }
+  onWeightSliderChange(initialSliderVal);
+});
 
-  if (!userName) {
-    showNotice(msgElemId, '⚠️ 請先在最上方設定填寫「你的名字」！', true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return false;
-  }
-  
-  // 使用浮點數容差值來檢查是否等於 1
-  if (isNaN(w1) || isNaN(w2) || Math.abs((w1 + w2) - 1.0) > 0.001) {
-    showNotice(msgElemId, '⚠️ 頂端環境設定的 v1 與 v2 權重相加必須等於 1！', true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return false;
-  }
-  
-  return true;
+// ----------------------------------------------------
+// 權重連動核心（徹底避免 0 || 預設值的型態誤判陷阱）
+// ----------------------------------------------------
+function onWeightSliderChange(sliderVal) {
+  const val = Number(sliderVal);
+  const textPercent = val;          // 0 ~ 100
+  const imgPercent = 100 - val;     // 100 ~ 0
+
+  state.w1 = Number((imgPercent / 100).toFixed(2));
+  state.w2 = Number((textPercent / 100).toFixed(2));
+
+  const pV1Elem = document.getElementById('percentV1');
+  const pV2Elem = document.getElementById('percentV2');
+  if (pV1Elem) pV1Elem.innerText = `${imgPercent}%`;
+  if (pV2Elem) pV2Elem.innerText = `${textPercent}%`;
+
+  // 1. 即時計算 Part 3 預覽分數
+  calcHEGAI();
+
+  // 2. 即時連動更新清單頁面
+  renderRecordTable();
 }
 
-function syncInput(sourceId, targetId, triggerCalc = false) {
-  const val = document.getElementById(sourceId).value;
-  document.getElementById(targetId).value = val;
+function calcHEGAI() {
+  const v1Elem = document.getElementById('v1');
+  const v2Elem = document.getElementById('v2');
+  if (!v1Elem || !v2Elem) return 0;
+
+  const v1 = v1Elem.value;
+  const v2 = v2Elem.value;
+
+  if (v1 === '' || v2 === '' || isNaN(Number(v1)) || isNaN(Number(v2))) {
+    const scoreElem = document.getElementById('hegaiFinal');
+    if (scoreElem) scoreElem.innerText = '--';
+    return 0;
+  }
+
+  const finalScore = Number((state.w1 * Number(v1) + state.w2 * Number(v2)).toFixed(1));
+  const scoreElem = document.getElementById('hegaiFinal');
+  if (scoreElem) scoreElem.innerText = finalScore;
+  return finalScore;
+}
+
+function renderRecordTable() {
+  const tbody = document.getElementById('recordTableBody');
+  if (!tbody) return;
+  
+  const count = records.length;
+  document.getElementById('listCount').innerText = `${count} 筆`;
+  document.getElementById('tabListCount').innerText = count;
+
+  // 小遊戲按鈕判定 (達門檻解鎖)
+  const gameBtn = document.getElementById('gameLinkBtn');
+  const gameStatus = document.getElementById('gameLockStatus');
+  if (gameBtn && gameStatus) {
+    if (count >= CONFIG.minRecordsForGame) {
+      gameBtn.disabled = false;
+      gameBtn.innerText = '🎮 前往小遊戲';
+      gameStatus.innerText = '（已解鎖！）';
+      gameStatus.style.color = '#15803d';
+    } else {
+      gameBtn.disabled = true;
+      gameBtn.innerText = '🔒 尚未解鎖';
+      gameStatus.innerText = `（再收集 ${CONFIG.minRecordsForGame - count} 筆即可解鎖）`;
+      gameStatus.style.color = '#86198f';
+    }
+  }
+
+  if (count === 0) {
+    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:#94a3b8;">目前尚無已暫存的資料</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = records.map((r, i) => {
+    // 依當前最新權重動態計算分數
+    const currentScore = Number((state.w1 * Number(r.v1) + state.w2 * Number(r.v2)).toFixed(1));
+    r.finalScore = currentScore;
+
+    return `
+      <tr>
+        <td>
+          <button class="btn-edit" onclick="editRecord(${i})">編輯</button>
+          <button class="btn-danger" onclick="deleteRecord(${i})">刪除</button>
+        </td>
+        <td>${i + 1}</td>
+        <td>${r.img1 ? `<img src="${r.img1.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
+        <td>${r.chinese}</td>
+        <td>${r.engText}</td>
+        <td>${r.distance}</td>
+        <td>${r.light}</td>
+        <td style="max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.gaiText}">${r.gaiText}</td>
+        <td>${r.hegaiText}</td>
+        <td>${r.img2 ? `<img src="${r.img2.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
+        <td>${r.v1}</td>
+        <td>${r.v2}</td>
+        <td><b>${currentScore}</b></td>
+      </tr>
+    `;
+  }).join('');
+
+  updateCancelBtnVisibility();
+}
+
+// ----------------------------------------------------
+// 輸入防呆與同步
+// ----------------------------------------------------
+function syncInput(sourceId, targetId, triggerCalc = false, min = null, max = null) {
+  const source = document.getElementById(sourceId);
+  const target = document.getElementById(targetId);
+  let val = source.value;
+
+  if (val !== '' && min !== null && max !== null) {
+    const num = Number(val);
+    source.style.borderColor = (!isNaN(num) && num >= min && num <= max) ? '' : '#dc2626';
+  }
+
+  target.value = val;
   if (triggerCalc) calcHEGAI();
 }
 
+function isValidNumber(valStr, min, max) {
+  if (valStr === '' || valStr === null || valStr === undefined) return false;
+  const num = Number(valStr);
+  return !isNaN(num) && num >= min && num <= max;
+}
+
+function validatePart0(msgElemId) {
+  const userName = document.getElementById('userName').value.trim();
+  if (!userName) {
+    showNotice(msgElemId, '⚠️ 請先在最上方填寫「你的名字」！', true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return false;
+  }
+  return true;
+}
+
+// ----------------------------------------------------
+// 分頁與導航
+// ----------------------------------------------------
 function switchTab(tabId, btnId) {
   document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -46,9 +181,7 @@ function goBackTo(tabId, btnId) {
 }
 
 function startNewRecord() {
-  // 進入新紀錄前，也要先檢查設定有沒有搞錯
   if (!validatePart0('exportMsg')) return;
-  
   resetForm();
   switchTab('tab-part1', 'btn-tab1');
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -62,21 +195,18 @@ function cancelToTab4() {
 
 function updateCancelBtnVisibility() {
   const isEditing = document.getElementById('editingIndex').value !== '-1';
-  if (records.length > 0 || isEditing) {
-    document.getElementById('cancelPart1Btn').style.display = 'block';
-  } else {
-    document.getElementById('cancelPart1Btn').style.display = 'none';
-  }
+  document.getElementById('cancelPart1Btn').style.display = (records.length > 0 || isEditing) ? 'block' : 'none';
 }
 
 function goToPart2() {
-  // 第一道防線：檢驗 Part 0 全域設定
   if (!validatePart0('part1Msg')) return;
 
   const chinese = document.getElementById('chinese').value.trim();
   const engText = document.getElementById('engText').value.trim();
-  const editingIdx = parseInt(document.getElementById('editingIndex').value);
+  const editingIdx = parseInt(document.getElementById('editingIndex').value, 10);
   const currentImg1 = currentImages.currImg1 || (editingIdx !== -1 ? records[editingIdx].img1 : null);
+  const distanceVal = document.getElementById('distance').value;
+  const lightVal = document.getElementById('light').value;
 
   if (!chinese || !engText) {
     showNotice('part1Msg', '⚠️ 請務必填寫「中文語句」與「翻譯英文句子」！', true);
@@ -86,8 +216,8 @@ function goToPart2() {
     showNotice('part1Msg', '⚠️ 請先上傳第1張生成圖片 (Generated Image)！', true);
     return;
   }
-  if (document.getElementById('distance').value === '' || document.getElementById('light').value === '') {
-    showNotice('part1Msg', '⚠️ 請拖曳滑桿或輸入設定 Distance 與 Light 數值！', true);
+  if (!isValidNumber(distanceVal, 0, 255) || !isValidNumber(lightVal, 0, 4000)) {
+    showNotice('part1Msg', '⚠️ 請確實填寫或滑動設定「Distance」與「Light」數值！', true);
     return;
   }
 
@@ -99,26 +229,27 @@ function goToPart2() {
 }
 
 function goToPart3() {
-  // 隨時防呆，確保過程中設定沒被亂改
   if (!validatePart0('part2Msg')) return;
 
   const gaiText = document.getElementById('gaiText').value.trim();
+  const hegaiTextVal = document.getElementById('hegaiText').value;
+
   if (!gaiText) {
     showNotice('part2Msg', '⚠️ 請輸入 GAIText (反向生成的英文描述)！', true);
     return;
   }
-  
-  if (document.getElementById('hegaiText').value === '') {
+  if (!isValidNumber(hegaiTextVal, 0, 10)) {
     showNotice('part2Msg', '⚠️ 請設定 HEGAIText 評分！', true);
     return;
   }
 
-  const editingIdx = parseInt(document.getElementById('editingIndex').value);
+  const editingIdx = parseInt(document.getElementById('editingIndex').value, 10);
   const currentImg1 = currentImages.currImg1 || (editingIdx !== -1 ? records[editingIdx].img1 : null);
   document.getElementById('part3-ref-img1').src = currentImg1.base64;
   document.getElementById('part3-ref-img1').style.display = 'block';
   document.getElementById('part3-ref-text').innerText = gaiText;
 
+  calcHEGAI();
   switchTab('tab-part3', 'btn-tab3');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -168,29 +299,12 @@ function calculateFitDimensions(origWidth, origHeight, maxWidth, maxHeight) {
   return { width: Math.round(origWidth * ratio), height: Math.round(origHeight * ratio) };
 }
 
-function calcHEGAI() {
-  const v1 = document.getElementById('v1').value;
-  const v2 = document.getElementById('v2').value;
-  const w1 = parseFloat(document.getElementById('weightV1').value) || 0;
-  const w2 = parseFloat(document.getElementById('weightV2').value) || 0;
-  
-  if (v1 === '' || v2 === '') {
-    document.getElementById('hegaiFinal').innerText = '--';
-    return 0;
-  }
-  
-  const finalScore = (w1 * parseFloat(v1) + w2 * parseFloat(v2)).toFixed(1);
-  document.getElementById('hegaiFinal').innerText = finalScore;
-  return finalScore;
-}
-
 function saveRecord() {
-  // 儲存前最後一道防線
   if (!validatePart0('actionMsg')) return;
 
   const chinese = document.getElementById('chinese').value.trim();
   const engText = document.getElementById('engText').value.trim();
-  const editingIdx = parseInt(document.getElementById('editingIndex').value);
+  const editingIdx = parseInt(document.getElementById('editingIndex').value, 10);
 
   const currentImg1 = currentImages.currImg1 || (editingIdx !== -1 ? records[editingIdx].img1 : null);
   const currentImg2 = currentImages.currImg2 || (editingIdx !== -1 ? records[editingIdx].img2 : null);
@@ -200,7 +314,9 @@ function saveRecord() {
     return;
   }
   
-  if (document.getElementById('v1').value === '' || document.getElementById('v2').value === '') {
+  const v1Val = document.getElementById('v1').value;
+  const v2Val = document.getElementById('v2').value;
+  if (!isValidNumber(v1Val, 0, 10) || !isValidNumber(v2Val, 0, 10)) {
     showNotice('actionMsg', '⚠️ 請設定 HEGAIImage_v1 與 v2 評分！', true);
     return;
   }
@@ -212,8 +328,8 @@ function saveRecord() {
     light: Number(document.getElementById('light').value),
     gaiText: document.getElementById('gaiText').value.trim(),
     hegaiText: Number(document.getElementById('hegaiText').value),
-    v1: Number(document.getElementById('v1').value),
-    v2: Number(document.getElementById('v2').value),
+    v1: Number(v1Val),
+    v2: Number(v2Val),
     finalScore: Number(calcHEGAI()),
     img1: currentImg1,
     img2: currentImg2
@@ -307,46 +423,21 @@ function resetForm() {
 function deleteRecord(index) {
   records.splice(index, 1);
   renderRecordTable();
-  if (parseInt(document.getElementById('editingIndex').value) === index) {
+  if (parseInt(document.getElementById('editingIndex').value, 10) === index) {
     resetForm();
   }
   showNotice('exportMsg', '已刪除該筆資料');
   updateCancelBtnVisibility();
 }
 
-function renderRecordTable() {
-  const tbody = document.getElementById('recordTableBody');
-  document.getElementById('listCount').innerText = `${records.length} 筆`;
-  document.getElementById('tabListCount').innerText = records.length;
-
-  if (records.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:#94a3b8;">目前尚無已暫存的資料</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = records.map((r, i) => `
-    <tr>
-      <td>
-        <button class="btn-edit" onclick="editRecord(${i})">編輯</button>
-        <button class="btn-danger" onclick="deleteRecord(${i})">刪除</button>
-      </td>
-      <td>${i + 1}</td>
-      <td>${r.img1 ? `<img src="${r.img1.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
-      <td>${r.chinese}</td>
-      <td>${r.engText}</td>
-      <td>${r.distance}</td>
-      <td>${r.light}</td>
-      <td style="max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.gaiText}">${r.gaiText}</td>
-      <td>${r.hegaiText}</td>
-      <td>${r.img2 ? `<img src="${r.img2.base64}" style="max-height:45px; max-width:60px; object-fit:contain;">` : '[無圖]'}</td>
-      <td>${r.v1}</td>
-      <td>${r.v2}</td>
-      <td><b>${r.finalScore}</b></td>
-    </tr>
-  `).join('');
-  updateCancelBtnVisibility();
+function openGame() {
+  if (records.length < CONFIG.minRecordsForGame) return;
+  window.open(CONFIG.gameUrl, '_blank');
 }
 
+// ----------------------------------------------------
+// 匯出 Excel（完整支援動態權重公式）
+// ----------------------------------------------------
 async function exportAllXLSX() {
   if (!validatePart0('exportMsg')) return;
 
@@ -358,6 +449,8 @@ async function exportAllXLSX() {
   const btn = document.getElementById('exportBtn');
   btn.disabled = true;
   btn.innerText = `正在產生 ${records.length} 筆資料之 Excel...`;
+
+  const { w1, w2 } = state;
 
   try {
     const workbook = new ExcelJS.Workbook();
@@ -385,7 +478,6 @@ async function exportAllXLSX() {
     };
 
     const headerRow = sheet.getRow(1);
-    
     const headerValues = [
       'Generated Image',
       'Chinese',
@@ -419,40 +511,32 @@ async function exportAllXLSX() {
       const rowNum = idx + 2;
       const row = sheet.getRow(rowNum);
 
-      const cellB = row.getCell(2);
-      cellB.value = rec.chinese;
-      cellB.font = { name: '標楷體', size: 12, bold: false, color: { argb: 'FF000000' } };
+      row.getCell(2).value = rec.chinese;
+      row.getCell(2).font = { name: '標楷體', size: 12, bold: false, color: { argb: 'FF000000' } };
 
-      const cellC = row.getCell(3);
-      cellC.value = rec.engText;
-      cellC.font = { name: 'Times New Roman', size: 12, bold: true, color: { argb: 'FF7030A0' } };
+      row.getCell(3).value = rec.engText;
+      row.getCell(3).font = { name: 'Times New Roman', size: 12, bold: true, color: { argb: 'FF7030A0' } };
 
-      const cellD = row.getCell(4);
-      cellD.value = rec.distance;
-      cellD.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+      row.getCell(4).value = rec.distance;
+      row.getCell(4).font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
 
-      const cellE = row.getCell(5);
-      cellE.value = rec.light;
-      cellE.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+      row.getCell(5).value = rec.light;
+      row.getCell(5).font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
 
-      const cellF = row.getCell(6);
-      cellF.value = rec.gaiText;
-      cellF.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+      row.getCell(6).value = rec.gaiText;
+      row.getCell(6).font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
 
-      const cellG = row.getCell(7);
-      cellG.value = rec.hegaiText;
-      cellG.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
+      row.getCell(7).value = rec.hegaiText;
+      row.getCell(7).font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
 
-      const cellI = row.getCell(9);
-      cellI.value = rec.v1;
-      cellI.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+      row.getCell(9).value = rec.v1;
+      row.getCell(9).font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
 
-      const cellJ = row.getCell(10);
-      cellJ.value = rec.v2;
-      cellJ.font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
+      row.getCell(10).value = rec.v2;
+      row.getCell(10).font = { name: 'Times New Roman', size: 12, bold: false, color: { argb: 'FF7030A0' } };
 
       const cellK = row.getCell(11);
-      cellK.value = { formula: `0.3*I${rowNum}+0.7*J${rowNum}`, result: rec.finalScore };
+      cellK.value = { formula: `${w1}*I${rowNum}+${w2}*J${rowNum}`, result: rec.finalScore };
       cellK.font = { name: 'Times New Roman', size: 16, bold: true, color: { argb: 'FFC00000' } };
 
       for (let col = 1; col <= 11; col++) {
@@ -461,15 +545,12 @@ async function exportAllXLSX() {
         c.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
       }
 
-      // --- 4x4 公分圖片設定 (1 公分約 37.8 像素，4 公分約 151 像素) ---
       const TARGET_PX = 151; 
-      const cellH_PX = 255; // 列高 191.25pt 約為 255px
+      const cellH_PX = 255;
       
       if (rec.img1) {
-        const cellW1_PX = 230; // Col A (32.25) 約為 230px
+        const cellW1_PX = 230;
         const fit1 = calculateFitDimensions(rec.img1.width, rec.img1.height, TARGET_PX, TARGET_PX);
-        
-        // 計算置中偏移
         const offsetX1 = ((cellW1_PX - fit1.width) / 2) / cellW1_PX;
         const offsetY1 = ((cellH_PX - fit1.height) / 2) / cellH_PX;
 
@@ -477,15 +558,13 @@ async function exportAllXLSX() {
         sheet.addImage(imgId1, {
           tl: { col: 0 + offsetX1, row: (rowNum - 1) + offsetY1 },
           ext: { width: fit1.width, height: fit1.height },
-          editAs: 'oneCell' // 確保圖片跟隨儲存格
+          editAs: 'oneCell'
         });
       }
 
       if (rec.img2) {
-        const cellW2_PX = 188; // Col H (26.25) 約為 188px
+        const cellW2_PX = 188;
         const fit2 = calculateFitDimensions(rec.img2.width, rec.img2.height, TARGET_PX, TARGET_PX);
-        
-        // 計算置中偏移
         const offsetX2 = ((cellW2_PX - fit2.width) / 2) / cellW2_PX;
         const offsetY2 = ((cellH_PX - fit2.height) / 2) / cellH_PX;
 
@@ -498,13 +577,8 @@ async function exportAllXLSX() {
       }
     });
 
-    // 每一列的高度設定
     sheet.eachRow((row, rowNumber) => {
-      if (rowNumber === 1) {
-        row.height = 47;
-      } else {
-        row.height = 191.25;
-      }
+      row.height = (rowNumber === 1) ? 47 : 191.25;
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
