@@ -336,6 +336,23 @@
       </a>
     </div>
 
+    <!-- 動態：每週影片 / 學習補充資源（若該週無影片自動隱藏） -->
+    <div class="card" id="weeklyVideoCard" style="display: none; border-color: #fde68a; background: #fffdf5;">
+      <div>
+        <span class="card-tag tag-task" style="background: #fef08a; color: #854d0e;">影片補充</span>
+        <div class="card-header">
+          <div class="card-icon">🎬</div>
+          <div class="card-info">
+            <h4 id="weeklyVideoTitle">課堂影音與補充</h4>
+            <p id="weeklyVideoDesc">點擊觀看本週主題的精彩影片或教學示範！</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="weeklyVideoLink" target="_blank" class="card-btn btn-primary" style="border-color: #fde047; color: #854d0e; background: #fef9c3;">
+        ▶️ 觀看影片
+      </a>
+    </div>
+
   </div>
 
   <!-- 相關實驗室平台與學術專區 -->
@@ -459,7 +476,11 @@
       companionLesson: '本週任務：3年級 下晡的點心',
       homeworkDrive: 'https://drive.google.com/drive/folders/1UaOzdNGhYsl-3kBFgWowx6hhQF_eiHBp?usp=drive_link',
       preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSeLpSYxC_3L7kbQJXTCNplTduvZSJlr95Bjzb5w6u0qDYPzqw/viewform?usp=dialog',
-      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSd7RFL2USTPD1BXtf2QKcnjXUKfmlGdqfAERE37mTeedw_UvA/viewform?usp=dialog'
+      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSd7RFL2USTPD1BXtf2QKcnjXUKfmlGdqfAERE37mTeedw_UvA/viewform?usp=dialog',
+      videoUrl: '',
+      videoTitle: '',
+      videoDesc: '',
+      
     },
     {
       week: 2,
@@ -467,7 +488,11 @@
       companionLesson: '本週任務：3年級 露營',
       homeworkDrive: 'https://drive.google.com/drive/folders/1ldmw_vvUf37AqPLKu_ZZO6ccZCAU6hSj?usp=drive_link',
       preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSeb_jr16HpbhQGFL4Isc9aRl6y7w9S2Zh6e0QGlf_zh1ScQNw/viewform?usp=dialog',
-      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdOXNa9YumwsABAJ58MrkpAIe_om3pyoMc9iOxPNqO1tvCjxg/viewform?usp=dialog'
+      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdOXNa9YumwsABAJ58MrkpAIe_om3pyoMc9iOxPNqO1tvCjxg/viewform?usp=dialog',
+      videoUrl: 'https://youtu.be/yAuwRxo4e7Y?si=CB6eR0npMz_6q1mO',
+      videoTitle: '模糊集合及其應用',
+      videoDesc: '機器學習生活應用(玉山銀行科技長/國立臺灣大學張智星教授)',
+      
     }
   ];
 
@@ -506,13 +531,34 @@
     document.getElementById('homeworkTitle').innerText = `第 ${data.week} 週 作業繳交雲端硬碟`;
     document.getElementById('homeworkLink').href = data.homeworkDrive;
 
-    // 4. 更新 Action 1 台英語學伴的每週課次提示
+// 4. 更新 Action 1 台英語學伴的每週課次提示
     const taskElem = document.getElementById('companionTask');
     if (data.companionLesson) {
       taskElem.innerText = `📖 ${data.companionLesson}`;
       taskElem.style.display = 'inline-block';
     } else {
       taskElem.style.display = 'none';
+    }
+
+// 5. 更新每週影片卡片（支援自訂標題與內文說明）
+    const videoCard = document.getElementById('weeklyVideoCard');
+    const videoLink = document.getElementById('weeklyVideoLink');
+    const videoTitle = document.getElementById('weeklyVideoTitle');
+    const videoDesc = document.getElementById('weeklyVideoDesc');
+
+    if (data.videoUrl && data.videoUrl.trim() !== '' && data.videoUrl !== '#') {
+      // 讀取自訂標題，若沒填則預設為「課堂影音與補充」
+      const subTitle = data.videoTitle || '課堂影音與補充';
+      videoTitle.innerText = `第 ${data.week} 週 ${subTitle}`;
+      
+      videoLink.href = data.videoUrl;
+      videoDesc.innerText = data.videoDesc || '點擊觀看本週主題的精彩影片或教學示範！';
+      
+      // 注意：這裡不寫 videoLink.innerText，按鈕文字就不會被覆蓋！
+
+      videoCard.style.display = 'flex';
+    } else {
+      videoCard.style.display = 'none';
     }
   }
 
