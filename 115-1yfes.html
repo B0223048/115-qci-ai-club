@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>永福國小 QCI & AI 人機共學社團115學年第一學期</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --purple: #8b5cf6;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 20px 16px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* 頂端 Hero 區塊 */
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: white;
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+    }
+    .header-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 6px;
+    }
+
+    /* 週次 / 日期選擇列 */
+    .week-nav-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .week-nav-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1e40af;
+      white-space: nowrap;
+    }
+    .week-btn-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .week-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .week-btn:hover {
+      background: #e2e8f0;
+    }
+    .week-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 24px 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .card-icon { font-size: 1.8rem; line-height: 1; }
+    .card-info h4 { font-size: 1.05rem; margin-bottom: 4px; color: #0f172a; }
+    .card-info p { font-size: 0.85rem; color: var(--text-sub); }
+
+    /* 本週課程進度動態提示字 */
+    .lesson-highlight {
+      margin-top: 8px;
+      font-weight: 700;
+      color: #d97706;
+      background: #fffbeb;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border-left: 3px solid #f59e0b;
+      display: inline-block;
+      font-size: 0.88rem;
+    }
+
+    /* 基礎標籤樣式 */
+    .card-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .tag-task { background: #fef3c7; color: #b45309; }
+    .tag-tool { background: #dcfce7; color: #15803d; }
+    .tag-learn { background: #f3e8ff; color: #7e22ce; }
+    .tag-upload { background: #e0e7ff; color: #3730a3; }
+
+    /* 優化後的專屬標籤配色 */
+    .tag-exp { background: #dcfce7; color: #15803d; }     /* 體驗式學習：薄荷青綠 */
+    .tag-bot { background: #ede9fe; color: #6d28d9; }     /* AI聊天機器人：優雅藍紫 */
+    .tag-project { background: #e0f2fe; color: #0369a1; } /* 國科會計畫：知性天藍 */
+
+    .card-btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 14px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; }
+    .btn-primary:hover { background: var(--primary); color: white; }
+    .btn-highlight { background: #2563eb; color: white; }
+    .btn-highlight:hover { background: #1d4ed8; }
+    .btn-upload { background: #4f46e5; color: white; }
+    .btn-upload:hover { background: #4338ca; }
+
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- 頂端學期橫幅 -->
+  <header>
+    <div class="header-badge">115-1 學期</div>
+    <h1>🏫 永福國小 QCI & AI 人機共學社團</h1>
+    <div class="header-meta">
+      <span id="headerDate">📅 課堂日期：載入中...</span>
+      <span>⏰ 上課時間：13:00 ~ 15:00</span>
+    </div>
+  </header>
+
+  <!-- 週次 / 日期切換按鈕列 -->
+  <div class="week-nav-card">
+    <div class="week-nav-label">📆 選擇課程週次：</div>
+    <div class="week-btn-list" id="weekBtnList">
+      <!-- 由 JS 動態依據資料產生按鈕 -->
+    </div>
+  </div>
+
+  <!-- 課堂任務與常用工具 -->
+  <div class="section-title">🚀 課堂任務與常用工具</div>
+  <div class="grid">
+    <!-- 動態：課前問卷 -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-task">課堂任務</span>
+        <div class="card-header">
+          <div class="card-icon">📝</div>
+          <div class="card-info">
+            <h4 id="preSurveyTitle">課前問卷調查</h4>
+            <p>上課前請先幫老師填寫課前問卷，非常感謝！</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="preSurveyLink" target="_blank" class="card-btn btn-primary">
+        前往填寫問卷
+      </a>
+    </div>
+
+    <!-- Action 1: 台英語學伴（動態支援：每週指定課次） -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-task">Action 1</span>
+        <div class="card-header">
+          <div class="card-icon">🇹🇼</div>
+          <div class="card-info">
+            <h4>台英語 AI 學伴系統</h4>
+            <p>南大真平國網TAIDE台英語AI學伴系統</p>
+            <div id="companionTask" class="lesson-highlight" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+      <a href="https://kws.oaselab.org/nutntw/dashboard/" target="_blank" class="card-btn btn-primary">
+        前往 AI 學伴系統
+      </a>
+    </div>
+    
+    <!-- 資料蒐集工具 -->
+    <div class="card" style="border-color: #93c5fd; background: #f0fdf4;">
+      <div>
+        <span class="card-tag tag-tool">小工具</span>
+        <div class="card-header">
+          <div class="card-icon">📊</div>
+          <div class="card-info">
+            <h4>資料模型蒐集小工具</h4>
+            <p>實作與記錄你生成的資料模型。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://b0223048.github.io/115-qci-ai-club/Data-Collection-tool.html" class="card-btn btn-highlight">
+        👉 打開資料蒐集小工具
+      </a>
+    </div>
+
+    <!-- 動態：作業繳交雲端硬碟 -->
+    <div class="card" style="border-color: #c7d2fe; background: #fdf2f8;">
+      <div>
+        <span class="card-tag tag-upload">作業繳交</span>
+        <div class="card-header">
+          <div class="card-icon">📁</div>
+          <div class="card-info">
+            <h4 id="homeworkTitle">作業繳交雲端硬碟</h4>
+            <p>請將匯出的 Excel 檔案上傳至此 Google 雲端資料夾！</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="homeworkLink" target="_blank" class="card-btn btn-upload">
+        ☁️ 開啟作業雲端硬碟
+      </a>
+    </div>
+
+    <!-- 動態：課後問卷 -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-task">課堂任務</span>
+        <div class="card-header">
+          <div class="card-icon">📝</div>
+          <div class="card-info">
+            <h4 id="postSurveyTitle">課後問卷調查</h4>
+            <p>下課前請再次協助填寫課後問卷，謝謝同學參與課程！</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="postSurveyLink" target="_blank" class="card-btn btn-primary">
+        前往填寫問卷
+      </a>
+    </div>
+
+    <!-- Action 2: KWS AI -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-task">KWS AI網站</span>
+        <div class="card-header">
+          <div class="card-icon">🎨</div>
+          <div class="card-info">
+            <h4>KWS AI</h4>
+            <p>文字/語音生圖、圖片轉文字模型，操作式體驗多模態 AI 應用。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://kws.oaselab.org/kws-ai/" target="_blank" class="card-btn btn-primary">
+        開啟 KWS AI 平台
+      </a>
+    </div>
+
+  </div>
+
+  <!-- 相關實驗室平台與學術專區 -->
+  <div class="section-title">📚 AI應用相關工具</div>
+  <div class="grid">
+    
+    <div class="card">
+      <div>
+        <span class="card-tag tag-exp">體驗式學習</span>
+        <div class="card-header">
+          <div class="card-icon">💻</div>
+          <div class="card-info">
+            <h4>QCI & AI-FML平台</h4>
+            <p>建立專屬 CI 模型、進行驗證與推論。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://kws.oaselab.org/qciai/" target="_blank" class="card-btn btn-primary">
+        開啟 QCI&AI 平台
+      </a>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="card-tag tag-bot">AI聊天機器人</span>
+        <div class="card-header">
+          <div class="card-icon">🤖</div>
+          <div class="card-info">
+            <h4>南大台英語 TAIDE 機器人</h4>
+            <p>基於台灣本土語言模型 TAIDE 的聊天機器人。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://kws.oaselab.org/llama-chat/" target="_blank" class="card-btn btn-primary">
+        與 TAIDE 聊天
+      </a>
+    </div>
+
+    <!-- 台灣語境下的互動式語言學習 AI 平台 -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-project">國科會計畫</span>
+        <div class="card-header">
+          <div class="card-icon">🌐</div>
+          <div class="card-info">
+            <h4>台灣語境下的互動式語言學習 AI 平台</h4>
+            <p>以教育應用為核心的多模態技術研發<br>TAIDE台英語AI學伴 計畫網頁</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/AICoE-Project/multimodal-lang-tw" target="_blank" class="card-btn btn-primary">
+        前往計畫介紹網頁
+      </a>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="card-tag tag-learn">國際學院</span>
+        <div class="card-header">
+          <div class="card-icon">🏛️</div>
+          <div class="card-info">
+            <h4>AI-FML International Academy</h4>
+            <p>AI 人機共學國際學院主頁。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/home" target="_blank" class="card-btn btn-primary">
+        參觀國際學院
+      </a>
+    </div>
+
+    <div class="card">
+      <div>
+        <span class="card-tag tag-learn">語音範本</span>
+        <div class="card-header">
+          <div class="card-icon">🎙️</div>
+          <div class="card-info">
+            <h4>IEEE CIS SS-QCI 台語語音範本</h4>
+            <p>Whisper Taiwanese Model 語音範本。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://sites.google.com/asap.nutn.edu.tw/fuzz-ieee-2025/workshop/Hands-on-Whisper-Taiwanese-Model/Taiwanese_Audio_Samples" target="_blank" class="card-btn btn-primary">
+        查看語音範本
+      </a>
+    </div>
+
+    <!-- ChatGPT -->
+    <div class="card">
+      <div>
+        <span class="card-tag tag-bot">AI聊天機器人</span>
+        <div class="card-header">
+          <div class="card-icon">💬</div>
+          <div class="card-info">
+            <h4>ChatGPT</h4>
+            <p>課堂輔助與問答練習工具。</p>
+          </div>
+        </div>
+      </div>
+      <a href="https://chat.openai.com/auth/login?next=/chat" target="_blank" class="card-btn btn-primary">
+        開啟 ChatGPT
+      </a>
+    </div>
+
+  </div>
+
+<footer>
+    <p>永福國小 南大 QCI&AI 共學社團 ｜ 指導老師：國立臺南大學資訊工程系 李健興教授 / OASE 實驗室團隊</p>
+  </footer>
+</div>
+
+<!-- 週次切換邏輯腳本 -->
+<script>
+  // ==========================================
+  // 【每週維護區】：在 homeworkDrive 貼上你的 Google Drive 作業夾網址！
+  // ==========================================
+  const WEEKS_DATA = [
+    {
+      week: 1,
+      date: '2026 年 9 月 16 日',
+      companionLesson: '本週任務：3年級 下晡的點心',
+      homeworkDrive: 'https://drive.google.com/drive/folders/1UaOzdNGhYsl-3kBFgWowx6hhQF_eiHBp?usp=drive_link',
+      preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSeLpSYxC_3L7kbQJXTCNplTduvZSJlr95Bjzb5w6u0qDYPzqw/viewform?usp=dialog',
+      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSd7RFL2USTPD1BXtf2QKcnjXUKfmlGdqfAERE37mTeedw_UvA/viewform?usp=dialog'
+    },
+    {
+      week: 2,
+      date: '2026 年 9 月 23 日',
+      companionLesson: '本週任務：3年級 露營',
+      homeworkDrive: 'https://drive.google.com/drive/folders/1ldmw_vvUf37AqPLKu_ZZO6ccZCAU6hSj?usp=drive_link',
+      preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSeb_jr16HpbhQGFL4Isc9aRl6y7w9S2Zh6e0QGlf_zh1ScQNw/viewform?usp=dialog',
+      postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdOXNa9YumwsABAJ58MrkpAIe_om3pyoMc9iOxPNqO1tvCjxg/viewform?usp=dialog'
+    }
+  ];
+
+  function renderWeekButtons() {
+    const list = document.getElementById('weekBtnList');
+    list.innerHTML = WEEKS_DATA.map((item, idx) => `
+      <button class="week-btn ${idx === WEEKS_DATA.length - 1 ? 'active' : ''}" onclick="selectWeek(${idx})">
+        第 ${item.week} 週 (${item.date.split('年')[1].trim()})
+      </button>
+    `).join('');
+
+    // 預設選中最後一週（最新一週）
+    selectWeek(WEEKS_DATA.length - 1);
+  }
+
+  function selectWeek(index) {
+    const data = WEEKS_DATA[index];
+    if (!data) return;
+
+    // 更新按鈕樣式
+    document.querySelectorAll('.week-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === index);
+    });
+
+    // 1. 更新頂端日期
+    document.getElementById('headerDate').innerText = `📅 課堂日期：${data.date}`;
+
+    // 2. 更新課前與課後問卷
+    document.getElementById('preSurveyTitle').innerText = `第 ${data.week} 週 課前問卷調查`;
+    document.getElementById('preSurveyLink').href = data.preSurvey;
+
+    document.getElementById('postSurveyTitle').innerText = `第 ${data.week} 週 課後問卷調查`;
+    document.getElementById('postSurveyLink').href = data.postSurvey;
+
+    // 3. 更新作業繳交雲端硬碟連結
+    document.getElementById('homeworkTitle').innerText = `第 ${data.week} 週 作業繳交雲端硬碟`;
+    document.getElementById('homeworkLink').href = data.homeworkDrive;
+
+    // 4. 更新 Action 1 台英語學伴的每週課次提示
+    const taskElem = document.getElementById('companionTask');
+    if (data.companionLesson) {
+      taskElem.innerText = `📖 ${data.companionLesson}`;
+      taskElem.style.display = 'inline-block';
+    } else {
+      taskElem.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', renderWeekButtons);
+</script>
+
+</body>
+</html>
