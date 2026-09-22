@@ -320,6 +320,7 @@
     </div>
 
     <!-- Action 2: KWS AI -->
+<!--  
     <div class="card">
       <div>
         <span class="card-tag tag-task">KWS AI網站</span>
@@ -333,6 +334,34 @@
       </div>
       <a href="https://kws.oaselab.org/kws-ai/" target="_blank" class="card-btn btn-primary">
         開啟 KWS AI 平台
+      </a>
+    </div>
+-->
+
+<!-- 常用資源：學生帳號分配表 -->
+    <div class="card" style="border-color: #bae6fd; background: #f0fdf4;">
+      <div>
+        <span class="card-tag tag-tool" style="background: #e0f2fe; color: #0369a1;">帳號查詢</span>
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <div class="card-info">
+            <h4>帳號分配表</h4>
+            <p>輸入密碼後點擊查看</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 內嵌小密碼框與解鎖按鈕 -->
+      <div style="display: flex; gap: 6px; margin-top: 10px;">
+        <input type="password" id="sheetPwdInput" placeholder="請輸入密碼" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; flex: 1;">
+        <button onclick="checkSheetPwd()" style="padding: 6px 12px; background: #0284c7; color: white; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;">解鎖</button>
+      </div>
+      
+      <!-- 解鎖後才顯示的連結 -->
+      <a href="https://docs.google.com/spreadsheets/d/1TaBrKCnURrrOOl0JUIFnTEUMGV4M5ISo/edit?usp=drive_link&ouid=100358191251016104875&rtpof=true&sd=true" 
+         id="sheetRealLink" target="_blank" class="card-btn btn-primary" 
+         style="display: none; border-color: #7dd3fc; background: #e0f2fe; color: #0369a1; margin-top: 10px;">
+        👉 點擊開啟帳號表 (新分頁)
       </a>
     </div>
 
@@ -559,6 +588,17 @@
       videoCard.style.display = 'flex';
     } else {
       videoCard.style.display = 'none';
+    }
+  }
+  // 學生帳號分配表簡易密碼保護
+function checkSheetPwd() {
+    const input = document.getElementById('sheetPwdInput').value.trim();
+    if (input === 'yfes') {
+      document.getElementById('sheetRealLink').style.display = 'block';
+      document.getElementById('sheetPwdInput').style.display = 'none';
+      event.target.style.display = 'none'; // 隱藏解鎖按鈕
+    } else {
+      alert('密碼錯誤！請詢問社團課老師或助教。');
     }
   }
 
