@@ -44,7 +44,7 @@ function onWeightSliderChange(sliderVal) {
   if (pV1Elem) pV1Elem.innerText = `${imgPercent}%`;
   if (pV2Elem) pV2Elem.innerText = `${textPercent}%`;
 
-  // 1. 即時計算 Part 3 預覽分數
+  // 1. 即時計算 Step 3 預覽分數
   calcHEGAI();
 
   // 2. 即時連動更新清單頁面
@@ -154,7 +154,7 @@ function isValidNumber(valStr, min, max) {
   return !isNaN(num) && num >= min && num <= max;
 }
 
-function validatePart0(msgElemId) {
+function validateStep0(msgElemId) {
   const userName = document.getElementById('userName').value.trim();
   if (!userName) {
     showNotice(msgElemId, '⚠️ 請先在最上方填寫「你的名字」！', true);
@@ -181,9 +181,9 @@ function goBackTo(tabId, btnId) {
 }
 
 function startNewRecord() {
-  if (!validatePart0('exportMsg')) return;
+  if (!validateStep0('exportMsg')) return;
   resetForm();
-  switchTab('tab-part1', 'btn-tab1');
+  switchTab('tab-Step1', 'btn-tab1');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -195,11 +195,11 @@ function cancelToTab4() {
 
 function updateCancelBtnVisibility() {
   const isEditing = document.getElementById('editingIndex').value !== '-1';
-  document.getElementById('cancelPart1Btn').style.display = (records.length > 0 || isEditing) ? 'block' : 'none';
+  document.getElementById('cancelStep1Btn').style.display = (records.length > 0 || isEditing) ? 'block' : 'none';
 }
 
-function goToPart2() {
-  if (!validatePart0('part1Msg')) return;
+function goToStep2() {
+  if (!validateStep0('Step1Msg')) return;
 
   const chinese = document.getElementById('chinese').value.trim();
   const engText = document.getElementById('engText').value.trim();
@@ -209,48 +209,48 @@ function goToPart2() {
   const lightVal = document.getElementById('light').value;
 
   if (!chinese || !engText) {
-    showNotice('part1Msg', '⚠️ 請務必填寫「中文語句」與「翻譯英文句子」！', true);
+    showNotice('Step1Msg', '⚠️ 請務必填寫「中文語句」與「翻譯英文句子」！', true);
     return;
   }
   if (!currentImg1) {
-    showNotice('part1Msg', '⚠️ 請先上傳第1張生成圖片 (Generated Image)！', true);
+    showNotice('Step1Msg', '⚠️ 請先上傳第1張生成圖片 (Generated Image)！', true);
     return;
   }
   if (!isValidNumber(distanceVal, 0, 255) || !isValidNumber(lightVal, 0, 4000)) {
-    showNotice('part1Msg', '⚠️ 請確實填寫或滑動設定「Distance」與「Light」數值！', true);
+    showNotice('Step1Msg', '⚠️ 請確實填寫或滑動設定「Distance」與「Light」數值！', true);
     return;
   }
 
-  document.getElementById('part2-ref-img1').src = currentImg1.base64;
-  document.getElementById('part2-ref-img1').style.display = 'block';
+  document.getElementById('Step2-ref-img1').src = currentImg1.base64;
+  document.getElementById('Step2-ref-img1').style.display = 'block';
 
-  switchTab('tab-part2', 'btn-tab2');
+  switchTab('tab-Step2', 'btn-tab2');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function goToPart3() {
-  if (!validatePart0('part2Msg')) return;
+function goToStep3() {
+  if (!validateStep0('Step2Msg')) return;
 
   const gaiText = document.getElementById('gaiText').value.trim();
   const hegaiTextVal = document.getElementById('hegaiText').value;
 
   if (!gaiText) {
-    showNotice('part2Msg', '⚠️ 請輸入 GAIText (反向生成的英文描述)！', true);
+    showNotice('Step2Msg', '⚠️ 請輸入 GAIText (反向生成的英文描述)！', true);
     return;
   }
   if (!isValidNumber(hegaiTextVal, 0, 10)) {
-    showNotice('part2Msg', '⚠️ 請設定 HEGAIText 評分！', true);
+    showNotice('Step2Msg', '⚠️ 請設定 HEGAIText 評分！', true);
     return;
   }
 
   const editingIdx = parseInt(document.getElementById('editingIndex').value, 10);
   const currentImg1 = currentImages.currImg1 || (editingIdx !== -1 ? records[editingIdx].img1 : null);
-  document.getElementById('part3-ref-img1').src = currentImg1.base64;
-  document.getElementById('part3-ref-img1').style.display = 'block';
-  document.getElementById('part3-ref-text').innerText = gaiText;
+  document.getElementById('Step3-ref-img1').src = currentImg1.base64;
+  document.getElementById('Step3-ref-img1').style.display = 'block';
+  document.getElementById('Step3-ref-text').innerText = gaiText;
 
   calcHEGAI();
-  switchTab('tab-part3', 'btn-tab3');
+  switchTab('tab-Step3', 'btn-tab3');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -280,12 +280,13 @@ function handleImage(input, prevId, storeKey) {
         if (storeKey === 'currImg1') {
           document.getElementById(prevId).src = base64;
           document.getElementById(prevId).style.display = 'block';
+          document.getElementById('prev1-container').style.display = 'block';
         }
         if (storeKey === 'currImg2') {
-          document.getElementById('part3-ref-img2-v1').src = base64;
-          document.getElementById('part3-ref-img2-v1').style.display = 'block';
-          document.getElementById('part3-ref-img2-v2').src = base64;
-          document.getElementById('part3-ref-img2-v2').style.display = 'block';
+          document.getElementById('Step3-ref-img2-v1').src = base64;
+          document.getElementById('Step3-ref-img2-v1').style.display = 'block';
+          document.getElementById('Step3-ref-img2-v2').src = base64;
+          document.getElementById('Step3-ref-img2-v2').style.display = 'block';
         }
       };
       img.src = base64;
@@ -300,7 +301,7 @@ function calculateFitDimensions(origWidth, origHeight, maxWidth, maxHeight) {
 }
 
 function saveRecord() {
-  if (!validatePart0('actionMsg')) return;
+  if (!validateStep0('actionMsg')) return;
 
   const chinese = document.getElementById('chinese').value.trim();
   const engText = document.getElementById('engText').value.trim();
@@ -374,32 +375,35 @@ function editRecord(index) {
   if (r.img1) {
     document.getElementById('prev1').src = r.img1.base64;
     document.getElementById('prev1').style.display = 'block';
+    document.getElementById('prev1-container').style.display = 'block';
   }
   if (r.img2) {
-    document.getElementById('part3-ref-img2-v1').src = r.img2.base64;
-    document.getElementById('part3-ref-img2-v1').style.display = 'block';
-    document.getElementById('part3-ref-img2-v2').src = r.img2.base64;
-    document.getElementById('part3-ref-img2-v2').style.display = 'block';
+    document.getElementById('Step3-ref-img2-v1').src = r.img2.base64;
+    document.getElementById('Step3-ref-img2-v1').style.display = 'block';
+    document.getElementById('Step3-ref-img2-v2').src = r.img2.base64;
+    document.getElementById('Step3-ref-img2-v2').style.display = 'block';
   }
 
   document.getElementById('editingIndex').value = index;
   document.getElementById('submitBtn').innerText = `💾 儲存修改 (第 ${index + 1} 筆)`;
-  switchTab('tab-part1', 'btn-tab1');
+  switchTab('tab-Step1', 'btn-tab1');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function resetForm() {
+  const prev1Box = document.getElementById('prev1-container');
+  if (prev1Box) prev1Box.style.display = 'none';
   document.getElementById('chinese').value = '';
   document.getElementById('engText').value = '';
   document.getElementById('gaiText').value = '';
   document.getElementById('genImageInput').value = '';
   document.getElementById('gaiImageInput').value = '';
   document.getElementById('prev1').style.display = 'none';
-  document.getElementById('part2-ref-img1').style.display = 'none';
-  document.getElementById('part3-ref-img1').style.display = 'none';
-  document.getElementById('part3-ref-img2-v1').style.display = 'none';
-  document.getElementById('part3-ref-img2-v2').style.display = 'none';
-  document.getElementById('part3-ref-text').innerText = '（尚未輸入文字）';
+  document.getElementById('Step2-ref-img1').style.display = 'none';
+  document.getElementById('Step3-ref-img1').style.display = 'none';
+  document.getElementById('Step3-ref-img2-v1').style.display = 'none';
+  document.getElementById('Step3-ref-img2-v2').style.display = 'none';
+  document.getElementById('Step3-ref-text').innerText = '（尚未輸入文字）';
   
   currentImages = { currImg1: null, currImg2: null };
   document.getElementById('editingIndex').value = '-1';
@@ -439,7 +443,7 @@ function openGame() {
 // 匯出 Excel（完整支援動態權重公式）
 // ----------------------------------------------------
 async function exportAllXLSX() {
-  if (!validatePart0('exportMsg')) return;
+  if (!validateStep0('exportMsg')) return;
 
   if (records.length === 0) {
     showNotice('exportMsg', '⚠️ 清單中尚無任何資料可以匯出！', true);
