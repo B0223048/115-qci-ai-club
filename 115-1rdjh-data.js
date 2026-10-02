@@ -43,9 +43,9 @@ const WEEKS_DATA = [
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSc2k64NZ7Zkh92H1eZ6CTklfZmK_5kX-tpbl-YtPH14Zl1hEQ/viewform?usp=dialog',
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfoKjCNQDsf2yEmggGIaryoV6sS_PoMXLvGOhVGjyKqJPlPFQ/viewform?usp=dialog',
     classTask:'操作式體驗',
-    classTitle: 'QCI & AI-FML平台',
-    classDesc: '建立專屬 CI 模型、進行驗證、推論與機器學習。',
-    classUrl: 'https://kws.oaselab.org/qciai/',
+    classTitle: '南大台英語TAIDE聊天AI機器人',
+    classDesc: '南大台英語TAIDE聊天AI機器人 (練習提示詞體驗)',
+    classUrl: 'https://kws.oaselab.org/llama-chat/',
     classLink:'前往網站'
   },
 
