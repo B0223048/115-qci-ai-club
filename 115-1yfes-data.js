@@ -36,8 +36,8 @@ const WEEKS_DATA = [
     week: 4,
     date: '2026 年 10 月 7 日',
     homeworkDrive: '#',
-    preSurvey: '#',
-    postSurvey: '#',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdnbpg_VsSSHFb5NT2Zlj9DEMoqGtsbdLwDaG7IH9F-hQ1spw/viewform?usp=dialog',
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfi9muzZksURqqTQ4Q8VYEEllM1rHc-mXy-AsfHfh5n9rZBcQ/viewform?usp=dialog',
     showDataTool: true,
     videos: [
       { title: 'TaiMASU校園學生安全示範影片', desc: '@ 臺南市仁德國小示範', url: 'https://www.youtube.com/watch?v=skpASJymA3A' },
@@ -45,7 +45,7 @@ const WEEKS_DATA = [
       { title: '搞懂「提示工程」成為專業 AI 溝通師', desc: '為什麼別人家的 ChatGPT 這麼聰明？', url: 'https://www.youtube.com/watch?v=d33gWFRZnas' }
     ],
     apps: [
-      { title: '長者陪伴機器人', desc: '跌倒告警偵測與對話體驗', url: '#' },
+      { title: '長者陪伴機器人', desc: '跌倒告警偵測與對話體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
       { title: '南大台英語 TAIDE 聊天AI機器人', desc: '練習提示詞體驗', url: 'https://kws.oaselab.org/llama-chat/' }
     ]
   },
