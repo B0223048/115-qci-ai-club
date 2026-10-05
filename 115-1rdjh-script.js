@@ -1,22 +1,23 @@
-var SHEET_ID = 'YOUR_SHEET_ID_HERE';
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + '1gpH46LEl7ts3tfc60AiSH7R2Jx64TELywEFsyqOsfxo' + '/gviz/tq?tqx=out:csv';
+// ========================================================
+// 【Google 試算表即時開關 CSV 網址】
+// ========================================================
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj3ZmSkdWxqZeZZE4Q3AvMZVCDtIgResrhtWw3MpBSmsiGPzWk3-EoWEuvs5VxUDLjftJScelxBGMC/pub?output=csv';
 
-// 全域開關變數（預設：課前開、課後關）
 var REMOTE_SWITCH = {
   preSurvey: true,
   postSurvey: false
 };
 
-// 向 Google Sheet 讀取最新即時開關狀態
+// 輪詢試算表狀態
 function fetchSurveySwitches() {
-  if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') return;
-
-  var xhr = new XMLHttpRequest();
-  // 加 timestamp 避免瀏覽器快取舊資料
-  xhr.open('GET', SHEET_CSV_URL + '&_t=' + new Date().getTime(), true);
-  xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      var lines = xhr.responseText.split('\n');
+  var noCacheUrl = SHEET_CSV_URL + '&_t=' + new Date().getTime();
+  fetch(noCacheUrl)
+    .then(function(res) {
+      if (!res.ok) throw new Error('Network error');
+      return res.text();
+    })
+    .then(function(text) {
+      var lines = text.split('\n');
       for (var i = 0; i < lines.length; i++) {
         var row = lines[i].replace(/"/g, '').split(',');
         if (row.length >= 2) {
@@ -30,11 +31,16 @@ function fetchSurveySwitches() {
           }
         }
       }
-      // 讀取成功後，更新目前畫面的卡片顯示
-      updateSurveyCardsVisibility();
-    }
-  };
-  xhr.send();
+      // 試算表更新後，直接重新渲染當前週次
+      var activeBtn = document.querySelector('.week-btn.active');
+      if (activeBtn) {
+        var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
+        selectWeek(btns.indexOf(activeBtn));
+      }
+    })
+    .catch(function(err) {
+      console.warn('讀取試算表狀態失敗：', err);
+    });
 }
 
 function renderWeekButtons() {
@@ -54,39 +60,12 @@ function renderWeekButtons() {
     })(i);
   }
 
+  // 預設先選中最新週次
   selectWeek(WEEKS_DATA.length - 1);
 
-  // 初次載入與每 10 秒自動輪詢一次試算表開關狀態
+  // 啟動定時讀取試算表開關 (每 5 秒同步一次)
   fetchSurveySwitches();
-  setInterval(fetchSurveySwitches, 10000);
-}
-
-// 專門動態更新課前與課後問卷卡片是否顯示
-function updateSurveyCardsVisibility() {
-  var activeBtn = document.querySelector('.week-btn.active');
-  if (!activeBtn) return;
-  var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
-  var index = btns.indexOf(activeBtn);
-  var data = WEEKS_DATA[index];
-  if (!data) return;
-
-  // 1. 課前問卷
-  var preSurveyLink = document.getElementById('preSurveyLink');
-  var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
-  if (REMOTE_SWITCH.preSurvey && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
-    if (preSurveyCard) preSurveyCard.style.display = 'flex';
-  } else {
-    if (preSurveyCard) preSurveyCard.style.display = 'none';
-  }
-
-  // 2. 課後問卷
-  var postSurveyLink = document.getElementById('postSurveyLink');
-  var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
-  if (REMOTE_SWITCH.postSurvey && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {
-    if (postSurveyCard) postSurveyCard.style.display = 'flex';
-  } else {
-    if (postSurveyCard) postSurveyCard.style.display = 'none';
-  }
+  setInterval(fetchSurveySwitches, 5000);
 }
 
 function selectWeek(index) {
@@ -101,11 +80,15 @@ function selectWeek(index) {
   // 1. 課堂日期
   document.getElementById('headerDate').innerText = '📅 課堂日期：' + data.date;
 
-  // 2. 課前問卷初始化
+  // 2. 課前問卷：只要試算表開關為 ON 且有網址就顯現，否則整張隱藏
   var preSurveyLink = document.getElementById('preSurveyLink');
-  if (preSurveyLink && data.preSurvey) {
+  var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
+  if (REMOTE_SWITCH.preSurvey && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
     document.getElementById('preSurveyTitle').innerText = '第 ' + data.week + ' 週 課前問卷調查';
     preSurveyLink.href = data.preSurvey;
+    if (preSurveyCard) preSurveyCard.style.display = 'flex';
+  } else {
+    if (preSurveyCard) preSurveyCard.style.display = 'none';
   }
 
   // 3. 概念式學習 / 影音區塊
@@ -278,15 +261,16 @@ function selectWeek(index) {
     }
   }
 
-  // 7. 課後問卷初始化
+  // 7. 課後問卷：只要試算表開關為 ON 且有網址就顯現，否則整張隱藏
   var postSurveyLink = document.getElementById('postSurveyLink');
-  if (postSurveyLink && data.postSurvey) {
+  var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
+  if (REMOTE_SWITCH.postSurvey && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {
     document.getElementById('postSurveyTitle').innerText = '第 ' + data.week + ' 週 課後問卷調查';
     postSurveyLink.href = data.postSurvey;
+    if (postSurveyCard) postSurveyCard.style.display = 'flex';
+  } else {
+    if (postSurveyCard) postSurveyCard.style.display = 'none';
   }
-
-  // 執行顯隱更新
-  updateSurveyCardsVisibility();
 }
 
 window.addEventListener('DOMContentLoaded', renderWeekButtons);
