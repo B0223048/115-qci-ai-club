@@ -49,7 +49,7 @@
     </div>
 
     <!-- Action 1: 台英語學伴（動態支援：每週指定課次） -->
-    <div class="card">
+    <div class="card" id="companionCard">
       <div>
         <span class="card-tag tag-task">Action 1</span>
         <div class="card-header">
@@ -65,6 +65,38 @@
         前往 AI 學伴系統
       </a>
     </div>
+        <!-- 動態：每週影片 / 學習補充資源（若該週無影片自動隱藏） -->
+    <div class="card" id="weeklyClassCard" style="display: none; border-color: #fde68a; background: #fffdf5;">
+      <div>
+        <span class="card-tag tag-task" id="weeklyClassTask" style="background: #fef08a; color: #854d0e;">概念式學習</span>
+        <div class="card-header">
+          <div class="card-icon"></div>
+          <div class="card-info">
+            <h4 id="weeklyClassTitle">概念式學習</h4>
+            <p id="weeklyClassDesc">概念式學習！</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="weeklyClassLink" target="_blank" class="card-btn btn-primary" style="border-color: #fde047; color: #854d0e; background: #fef9c3;">
+       概念式學習
+      </a>
+    </div>
+        <!-- 3B. 新課綱體驗：GAI 體驗應用 <第5週起顯示) -->
+    <div class="card" id="gaiAppCard" style="display: none; border-color: #c4b5fd; background: #f5f3ff;">
+      <div>
+        <span class="card-tag tag-exp">體驗式學習</span>
+        <div class="card-header">
+          <div class="card-icon">🚀</div>
+          <div class="card-info">
+            <h4 id="gaiAppTitle">體驗式學習</h4>
+            <p id="gaiAppDesc">體驗式學習</p>
+          </div>
+        </div>
+      </div>
+      <a href="#" id="gaiAppLink" target="_blank" class="card-btn btn-primary" style="background: #ede9fe; color: #6d28d9; border-color: #ddd6fe;">
+        開始體驗
+      </a>
+    </div>
     
     <!-- 資料蒐集工具 -->
     <div class="card" style="border-color: #93c5fd; background: #f0fdf4;">
@@ -73,7 +105,7 @@
         <div class="card-header">
           <div class="card-icon">📊</div>
           <div class="card-info">
-            <h4>資料模型蒐集小工具</h4>
+            <h4>QCI&AI資料模型蒐集小工具</h4>
             <p>實作與記錄你生成的資料模型。</p>
           </div>
         </div>
@@ -91,7 +123,7 @@
           <div class="card-icon">📁</div>
           <div class="card-info">
             <h4 id="homeworkTitle">作業繳交雲端硬碟</h4>
-            <p>請將匯出的 Excel 檔案上傳至此 Google 雲端資料夾！</p>
+            <p>請將本次作業上傳至此 Google 雲端資料夾！</p>
           </div>
         </div>
       </div>
@@ -148,38 +180,16 @@
           </div>
         </div>
       </div>
-      
 <!-- 內嵌小密碼框與解鎖按鈕 -->
       <div style="display: flex; gap: 6px; margin-top: 10px;">
         <input type="password" id="sheetPwdInput" placeholder="請輸入密碼" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.88rem; flex: 1;">
         <button id="sheetUnlockBtn" onclick="checkSheetPwd()" style="padding: 6px 12px; background: #0284c7; color: white; border-radius: 6px; border: none; font-weight: 600; cursor: pointer;">解鎖</button>
       </div>
-      
-      <!-- 解鎖後才顯示的連結 -->
-      <a href="https://docs.google.com/spreadsheets/d/1TaBrKCnURrrOOl0JUIFnTEUMGV4M5ISo/edit?usp=drive_link&ouid=100358191251016104875&rtpof=true&sd=true" 
-         id="sheetRealLink" target="_blank" class="card-btn btn-primary" 
-         style="display: none; border-color: #7dd3fc; background: #e0f2fe; color: #0369a1; margin-top: 10px;">
-        👉 點擊開啟帳號表 (新分頁)
-      </a>
+
     </div>
 
 
-    <!-- 動態：每週影片 / 學習補充資源（若該週無影片自動隱藏） -->
-    <div class="card" id="weeklyClassCard" style="display: none; border-color: #fde68a; background: #fffdf5;">
-      <div>
-        <span class="card-tag tag-task" id="weeklyClassTask" style="background: #fef08a; color: #854d0e;">課堂補充</span>
-        <div class="card-header">
-          <div class="card-icon"></div>
-          <div class="card-info">
-            <h4 id="weeklyClassTitle">課堂補充</h4>
-            <p id="weeklyClassDesc">課堂補充！</p>
-          </div>
-        </div>
-      </div>
-      <a href="#" id="weeklyClassLink" target="_blank" class="card-btn btn-primary" style="border-color: #fde047; color: #854d0e; background: #fef9c3;">
-        ▶️ 觀看影片
-      </a>
-    </div>
+
           <!-- Google Meet 線上會議 -->
 
 
@@ -214,7 +224,7 @@
           <div class="card-icon">💻</div>
           <div class="card-info">
             <h4>QCI & AI-FML平台</h4>
-            <p>建立專屬 CI 模型、進行驗證與推論。</p>
+            <p>建立 CI 模型、進行驗證與推論。</p>
           </div>
         </div>
       </div>
