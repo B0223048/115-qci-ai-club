@@ -52,6 +52,7 @@ function renderWeekButtons() {
   }
 
   selectWeek(WEEKS_DATA.length - 1);
+  fetchSurveySwitches();
 }
 
 function selectWeek(index) {
