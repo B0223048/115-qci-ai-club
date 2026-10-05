@@ -1,45 +1,36 @@
 // ========================================================
-// 【Google 試算表即時開關 CSV 網址】
+// 【Google Apps Script 即時 API 網址 (0快取)】
 // ========================================================
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj3ZmSkdWxqZeZZE4Q3AvMZVCDtIgResrhtWw3MpBSmsiGPzWk3-EoWEuvs5VxUDLjftJScelxBGMC/pub?output=csv';
+var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwVzvRU3EfAwqt_2fz4ITRmHPy5X7lM3wV1WkOtpBoyONdAbTsFoRAoakNvsKecuYy1/exec';
 
 var REMOTE_SWITCH = {
   preSurvey: true,
   postSurvey: false
 };
 
-// 輪詢試算表狀態
+// 即時取得開關狀態
 function fetchSurveySwitches() {
-  var noCacheUrl = SHEET_CSV_URL + '&_t=' + new Date().getTime();
-  fetch(noCacheUrl)
+  if (!GAS_API_URL || GAS_API_URL.indexOf('AKfycb') === -1) return;
+
+  fetch(GAS_API_URL + '?_t=' + new Date().getTime())
     .then(function(res) {
-      if (!res.ok) throw new Error('Network error');
-      return res.text();
+      return res.json();
     })
-    .then(function(text) {
-      var lines = text.split('\n');
-      for (var i = 0; i < lines.length; i++) {
-        var row = lines[i].replace(/"/g, '').split(',');
-        if (row.length >= 2) {
-          var name = row[0].trim();
-          var state = row[1].trim().toUpperCase();
-          if (name.indexOf('課前') !== -1) {
-            REMOTE_SWITCH.preSurvey = (state === 'ON' || state === 'TRUE' || state === '1');
-          }
-          if (name.indexOf('課後') !== -1) {
-            REMOTE_SWITCH.postSurvey = (state === 'ON' || state === 'TRUE' || state === '1');
-          }
+    .then(function(data) {
+      var changed = (REMOTE_SWITCH.preSurvey !== data.preSurvey || REMOTE_SWITCH.postSurvey !== data.postSurvey);
+      REMOTE_SWITCH.preSurvey = data.preSurvey;
+      REMOTE_SWITCH.postSurvey = data.postSurvey;
+
+      if (changed) {
+        var activeBtn = document.querySelector('.week-btn.active');
+        if (activeBtn) {
+          var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
+          selectWeek(btns.indexOf(activeBtn));
         }
-      }
-      // 試算表更新後，直接重新渲染當前週次
-      var activeBtn = document.querySelector('.week-btn.active');
-      if (activeBtn) {
-        var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
-        selectWeek(btns.indexOf(activeBtn));
       }
     })
     .catch(function(err) {
-      console.warn('讀取試算表狀態失敗：', err);
+      console.warn('API 讀取失敗：', err);
     });
 }
 
@@ -60,12 +51,11 @@ function renderWeekButtons() {
     })(i);
   }
 
-  // 預設先選中最新週次
   selectWeek(WEEKS_DATA.length - 1);
 
-  // 啟動定時讀取試算表開關 (每 5 秒同步一次)
+  // 初次執行與每 4 秒輪詢一次
   fetchSurveySwitches();
-  setInterval(fetchSurveySwitches, 5000);
+  setInterval(fetchSurveySwitches, 4000);
 }
 
 function selectWeek(index) {
@@ -80,7 +70,7 @@ function selectWeek(index) {
   // 1. 課堂日期
   document.getElementById('headerDate').innerText = '📅 課堂日期：' + data.date;
 
-  // 2. 課前問卷：只要試算表開關為 ON 且有網址就顯現，否則整張隱藏
+  // 2. 課前問卷
   var preSurveyLink = document.getElementById('preSurveyLink');
   var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
   if (REMOTE_SWITCH.preSurvey && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
@@ -190,7 +180,7 @@ function selectWeek(index) {
     dataToolCard.style.display = data.showDataTool ? 'flex' : 'none';
   }
 
-  // 6. 新課綱體驗：GAI 體驗應用
+  // 6. 新課綱體驗：GAI 體驗應用 (已修復變數與標題)
   var gaiAppCard = document.getElementById('gaiAppCard');
   if (gaiAppCard) {
     if (data.apps && data.apps.length > 0) {
@@ -210,13 +200,13 @@ function selectWeek(index) {
       var gInfoDiv = document.createElement('div');
       gInfoDiv.className = 'card-info';
       var gH4 = document.createElement('h4');
-      gH4.innerText = '第 ' + data.week + ' 週 GAI 體驗式學習';
+      gH4.innerText = '第 ' + data.week + ' 週 體驗式學習'; // 修正為體驗式學習
       var gP = document.createElement('p');
 
       gInfoDiv.appendChild(gH4);
       gInfoDiv.appendChild(gP);
       gHeaderDiv.appendChild(gIconDiv);
-      gHeaderDiv.appendChild(gInfoDiv);
+      gHeaderDiv.appendChild(gInfoDiv); // 修正變數名稱：gInfoDiv
       gTopDiv.appendChild(gTag);
       gTopDiv.appendChild(gHeaderDiv);
 
@@ -261,7 +251,7 @@ function selectWeek(index) {
     }
   }
 
-  // 7. 課後問卷：只要試算表開關為 ON 且有網址就顯現，否則整張隱藏
+  // 7. 課後問卷
   var postSurveyLink = document.getElementById('postSurveyLink');
   var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
   if (REMOTE_SWITCH.postSurvey && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {

@@ -39,7 +39,7 @@ const WEEKS_DATA = [
       { title: '國產生成式AI對話引擎 TAIDE', desc: '可用台語、客語回應要求｜公視晚間新聞', url: 'https://www.youtube.com/watch?v=5-0wXYhpZBU', btnText: '觀看公視報導' },
       { title: '搞懂「提示工程」', desc: '為什麼別人家的 ChatGPT 這麼聰明？成為專業 AI 溝通師', url: 'https://www.youtube.com/watch?v=d33gWFRZnas', btnText: '觀看提示詞教學' }
     ],
-    companionLesson: '本週任務：5年級 過年',
+    companionLesson: '本週任務：5年級 地震',
     showDataTool: true,
     apps: [
       { title: '南大台英語 TAIDE 聊天機器人', desc: '練習提示詞體驗', url: 'https://kws.oaselab.org/llama-chat/', btnText: '開始練習提示詞' },
