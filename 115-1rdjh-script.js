@@ -52,10 +52,6 @@ function renderWeekButtons() {
   }
 
   selectWeek(WEEKS_DATA.length - 1);
-
-  // 初次執行與每 4 秒輪詢一次
-  fetchSurveySwitches();
-  setInterval(fetchSurveySwitches, 4000);
 }
 
 function selectWeek(index) {
