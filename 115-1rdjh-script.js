@@ -1,3 +1,42 @@
+var SHEET_ID = 'YOUR_SHEET_ID_HERE';
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/' + '1gpH46LEl7ts3tfc60AiSH7R2Jx64TELywEFsyqOsfxo' + '/gviz/tq?tqx=out:csv';
+
+// 全域開關變數（預設：課前開、課後關）
+var REMOTE_SWITCH = {
+  preSurvey: true,
+  postSurvey: false
+};
+
+// 向 Google Sheet 讀取最新即時開關狀態
+function fetchSurveySwitches() {
+  if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') return;
+
+  var xhr = new XMLHttpRequest();
+  // 加 timestamp 避免瀏覽器快取舊資料
+  xhr.open('GET', SHEET_CSV_URL + '&_t=' + new Date().getTime(), true);
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 300) {
+      var lines = xhr.responseText.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var row = lines[i].replace(/"/g, '').split(',');
+        if (row.length >= 2) {
+          var name = row[0].trim();
+          var state = row[1].trim().toUpperCase();
+          if (name.indexOf('課前') !== -1) {
+            REMOTE_SWITCH.preSurvey = (state === 'ON' || state === 'TRUE' || state === '1');
+          }
+          if (name.indexOf('課後') !== -1) {
+            REMOTE_SWITCH.postSurvey = (state === 'ON' || state === 'TRUE' || state === '1');
+          }
+        }
+      }
+      // 讀取成功後，更新目前畫面的卡片顯示
+      updateSurveyCardsVisibility();
+    }
+  };
+  xhr.send();
+}
+
 function renderWeekButtons() {
   var list = document.getElementById('weekBtnList');
   list.innerHTML = '';
@@ -15,117 +54,39 @@ function renderWeekButtons() {
     })(i);
   }
 
-  // 初始化老師專屬快速控制面板
-  initTeacherControlPanel();
-
   selectWeek(WEEKS_DATA.length - 1);
+
+  // 初次載入與每 10 秒自動輪詢一次試算表開關狀態
+  fetchSurveySwitches();
+  setInterval(fetchSurveySwitches, 10000);
 }
 
-// 取得問卷開關狀態 (優先讀取現場面板狀態，預設值皆為關閉 false)
-function getSurveyState(week, type) {
-  var key = 'w' + week + '_' + type;
-  var saved = localStorage.getItem(key);
-  if (saved !== null) {
-    return saved === 'true';
-  }
-  // 預設第1週等預設情況
-  return false;
-}
-
-function setSurveyState(week, type, val) {
-  var key = 'w' + week + '_' + type;
-  localStorage.setItem(key, val ? 'true' : 'false');
-}
-
-// 建立老師專用懸浮控制台
-function initTeacherControlPanel() {
-  if (document.getElementById('teacherPanel')) return;
-
-  var panel = document.createElement('div');
-  panel.id = 'teacherPanel';
-  panel.style.position = 'fixed';
-  panel.style.bottom = '20px';
-  panel.style.right = '20px';
-  panel.style.background = '#1e293b';
-  panel.style.color = '#ffffff';
-  panel.style.padding = '12px 16px';
-  panel.style.borderRadius = '10px';
-  panel.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)';
-  panel.style.zIndex = '9999';
-  panel.style.fontSize = '0.85rem';
-  panel.style.display = 'none'; // 預設隱藏
-
-  var title = document.createElement('div');
-  title.style.fontWeight = 'bold';
-  title.style.marginBottom = '8px';
-  title.innerText = '⚙️ 課堂現場問卷控制';
-
-  var btnPre = document.createElement('button');
-  btnPre.id = 'togglePreBtn';
-  btnPre.style.marginRight = '8px';
-  btnPre.style.padding = '6px 10px';
-  btnPre.style.borderRadius = '6px';
-  btnPre.style.border = 'none';
-  btnPre.style.cursor = 'pointer';
-
-  var btnPost = document.createElement('button');
-  btnPost.id = 'togglePostBtn';
-  btnPost.style.padding = '6px 10px';
-  btnPost.style.borderRadius = '6px';
-  btnPost.style.border = 'none';
-  btnPost.style.cursor = 'pointer';
-
-  btnPre.onclick = function() {
-    var curIdx = getCurrentWeekIndex();
-    var curWeek = WEEKS_DATA[curIdx].week;
-    var curState = getSurveyState(curWeek, 'pre');
-    setSurveyState(curWeek, 'pre', !curState);
-    selectWeek(curIdx);
-  };
-
-  btnPost.onclick = function() {
-    var curIdx = getCurrentWeekIndex();
-    var curWeek = WEEKS_DATA[curIdx].week;
-    var curState = getSurveyState(curWeek, 'post');
-    setSurveyState(curWeek, 'post', !curState);
-    selectWeek(curIdx);
-  };
-
-  panel.appendChild(title);
-  panel.appendChild(btnPre);
-  panel.appendChild(btnPost);
-  document.body.appendChild(panel);
-
-  // 快捷鍵呼叫：按鍵盤 Ctrl + M 即可切換面板顯示/隱藏
-  window.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && (e.key === 'm' || e.key === 'M')) {
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-  });
-
-  // 密技：連按 3 次頂端大標題也可以打開/關閉面板
-  var headerH1 = document.querySelector('header h1');
-  if (headerH1) {
-    var clickCount = 0;
-    var timer = null;
-    headerH1.style.cursor = 'pointer';
-    headerH1.addEventListener('click', function() {
-      clickCount++;
-      clearTimeout(timer);
-      timer = setTimeout(function() { clickCount = 0; }, 600);
-      if (clickCount >= 3) {
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        clickCount = 0;
-      }
-    });
-  }
-}
-
-function getCurrentWeekIndex() {
+// 專門動態更新課前與課後問卷卡片是否顯示
+function updateSurveyCardsVisibility() {
   var activeBtn = document.querySelector('.week-btn.active');
-  if (!activeBtn) return WEEKS_DATA.length - 1;
+  if (!activeBtn) return;
   var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
-  return btns.indexOf(activeBtn);
+  var index = btns.indexOf(activeBtn);
+  var data = WEEKS_DATA[index];
+  if (!data) return;
+
+  // 1. 課前問卷
+  var preSurveyLink = document.getElementById('preSurveyLink');
+  var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
+  if (REMOTE_SWITCH.preSurvey && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
+    if (preSurveyCard) preSurveyCard.style.display = 'flex';
+  } else {
+    if (preSurveyCard) preSurveyCard.style.display = 'none';
+  }
+
+  // 2. 課後問卷
+  var postSurveyLink = document.getElementById('postSurveyLink');
+  var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
+  if (REMOTE_SWITCH.postSurvey && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {
+    if (postSurveyCard) postSurveyCard.style.display = 'flex';
+  } else {
+    if (postSurveyCard) postSurveyCard.style.display = 'none';
+  }
 }
 
 function selectWeek(index) {
@@ -140,33 +101,11 @@ function selectWeek(index) {
   // 1. 課堂日期
   document.getElementById('headerDate').innerText = '📅 課堂日期：' + data.date;
 
-  // 讀取當週的現場開關狀態
-  var isPreOpen = getSurveyState(data.week, 'pre');
-  var isPostOpen = getSurveyState(data.week, 'post');
-
-  // 更新控制面板按鈕文字與顏色
-  var btnPre = document.getElementById('togglePreBtn');
-  var btnPost = document.getElementById('togglePostBtn');
-  if (btnPre) {
-    btnPre.innerText = isPreOpen ? '課前問卷：已開啟' : '課前問卷：已隱藏';
-    btnPre.style.background = isPreOpen ? '#10b981' : '#64748b';
-    btnPre.style.color = '#fff';
-  }
-  if (btnPost) {
-    btnPost.innerText = isPostOpen ? '課後問卷：已開啟' : '課後問卷：已隱藏';
-    btnPost.style.background = isPostOpen ? '#10b981' : '#64748b';
-    btnPost.style.color = '#fff';
-  }
-
-  // 2. 課前問卷（由現場開關控制）
+  // 2. 課前問卷初始化
   var preSurveyLink = document.getElementById('preSurveyLink');
-  var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
-  if (isPreOpen && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
+  if (preSurveyLink && data.preSurvey) {
     document.getElementById('preSurveyTitle').innerText = '第 ' + data.week + ' 週 課前問卷調查';
     preSurveyLink.href = data.preSurvey;
-    if (preSurveyCard) preSurveyCard.style.display = 'flex';
-  } else {
-    if (preSurveyCard) preSurveyCard.style.display = 'none';
   }
 
   // 3. 概念式學習 / 影音區塊
@@ -339,16 +278,15 @@ function selectWeek(index) {
     }
   }
 
-  // 7. 課後問卷（由現場開關控制）
+  // 7. 課後問卷初始化
   var postSurveyLink = document.getElementById('postSurveyLink');
-  var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
-  if (isPostOpen && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {
+  if (postSurveyLink && data.postSurvey) {
     document.getElementById('postSurveyTitle').innerText = '第 ' + data.week + ' 週 課後問卷調查';
     postSurveyLink.href = data.postSurvey;
-    if (postSurveyCard) postSurveyCard.style.display = 'flex';
-  } else {
-    if (postSurveyCard) postSurveyCard.style.display = 'none';
   }
+
+  // 執行顯隱更新
+  updateSurveyCardsVisibility();
 }
 
 window.addEventListener('DOMContentLoaded', renderWeekButtons);
