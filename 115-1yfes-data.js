@@ -40,13 +40,14 @@ const WEEKS_DATA = [
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfi9muzZksURqqTQ4Q8VYEEllM1rHc-mXy-AsfHfh5n9rZBcQ/viewform?usp=dialog',
     showDataTool: true,
     videos: [
-      { title: 'TaiMASU校園學生安全示範影片', desc: '@ 臺南市仁德國小示範', url: 'https://www.youtube.com/watch?v=skpASJymA3A' },
-      { title: '國產生成式AI對話引擎 TAIDE', desc: '可用台語、客語回應要求 ｜ 公視晚間新聞', url: 'https://www.youtube.com/watch?v=5-0wXYhpZBU' },
-      { title: '搞懂「提示工程」成為專業 AI 溝通師', desc: '為什麼別人家的 ChatGPT 這麼聰明？', url: 'https://www.youtube.com/watch?v=d33gWFRZnas' }
+      { title: '10272025-南大TAIDE大型語言模型台英語對話機器人對話 (TAIDE 70B + RAG)', desc: '', url: 'https://youtu.be/a1sEcMhc4OI' },
+      { title: '11242023-設計女媧實驗室積木派發至Kebbi Air 機器人 @ 臺南市仁德國小資訊課(No. 2) ', desc: '', url: 'https://youtu.be/QWmzoRRiJt0' },
+
     ],
     apps: [
-      { title: '長者陪伴機器人', desc: '跌倒告警偵測與對話體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
-      { title: '南大台英語 TAIDE 聊天AI機器人', desc: '練習提示詞體驗', url: 'https://kws.oaselab.org/llama-chat/' }
+      { title: '南大台英語 TAIDE 聊天AI機器人', desc: '練習提示詞體驗', url: 'https://kws.oaselab.org/llama-chat/' },
+      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
+      { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1kyiLmCLjNWoFOoOBsHI3G8zEv-jNstMI/view?usp=sharing' },
     ]
   },
 ];
