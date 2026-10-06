@@ -1,0 +1,212 @@
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --purple: #8b5cf6;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding: 20px 16px;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* 頂端 Hero 區塊 */
+header {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  color: white;
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+.header-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 8px;
+}
+.header-meta {
+  font-size: 0.95rem;
+  opacity: 0.95;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+/* 週次 / 日期選擇列 */
+.week-nav-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.week-nav-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1e40af;
+  white-space: nowrap;
+}
+.week-btn-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.week-btn {
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.week-btn:hover {
+  background: #e2e8f0;
+}
+.week-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 24px 0 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f172a;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.card-icon { font-size: 1.8rem; line-height: 1; }
+.card-info h4 { font-size: 1.05rem; margin-bottom: 4px; color: #0f172a; }
+.card-info p { font-size: 0.85rem; color: var(--text-sub); }
+
+/* 本週課程進度動態提示字 */
+.lesson-highlight {
+  margin-top: 8px;
+  font-weight: 700;
+  color: #d97706;
+  background: #fffbeb;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #f59e0b;
+  display: inline-block;
+  font-size: 0.88rem;
+}
+
+/* 標籤通用基礎樣式 */
+.card-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 9999px;
+  border-width: 1px;
+  border-style: solid;
+  line-height: 1.2;
+}
+
+/* 核心與課堂相關 */
+.tag-survey     { background-color: #FFF7ED; color: #C2410C; border-color: #FDBA74; } /* 問卷調查 (暖橘) */
+.tag-submit     { background-color: #FEF2F2; color: #B91C1C; border-color: #FCA5A5; } /* 作業繳交 (珊瑚紅) */
+.tag-companion  { background-color: #F0FDF4; color: #15803D; border-color: #86EFAC; } /* AI學伴系統 (活力草綠) */
+.tag-concept    { background-color: #F0F9FF; color: #0369A1; border-color: #BAE6FD; } /* 概念式學習 (湛藍) */
+.tag-experience { background-color: #ECFDF5; color: #047857; border-color: #A7F3D0; } /* 體驗式學習 (翡翠綠) */
+.tag-tool       { background-color: #EEF2FF; color: #4338CA; border-color: #C7D2FE; } /* 小工具 (靛藍) */
+
+/* 系統與會議 */
+.tag-account    { background-color: #F1F5F9; color: #475569; border-color: #CBD5E1; } /* 帳號查詢 (石板灰) */
+.tag-meet       { background-color: #F5F3FF; color: #6D28D9; border-color: #DDD6FE; } /* 線上會議 (薰衣草紫) */
+
+/* 相關資源區塊 */
+.tag-ai         { background-color: #ECFEFF; color: #0E7490; border-color: #A5F3FC; } /* AI聊天機器人 (青藍) */
+.tag-nstc       { background-color: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; } /* 國科會計畫 (海軍藍) */
+.tag-academy    { background-color: #FEFCE8; color: #A16207; border-color: #FDE047; } /* 國際學院 (暖琥珀) */
+.tag-voice      { background-color: #FFF1F2; color: #BE123C; border-color: #FECDD3; } /* 語音範本 (玫瑰粉) */
+
+.card-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 14px;
+  transition: all 0.2s;
+}
+.btn-primary { background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; }
+.btn-primary:hover { background: var(--primary); color: white; }
+.btn-highlight { background: #2563eb; color: white; }
+.btn-highlight:hover { background: #1d4ed8; }
+.btn-upload { background: #4f46e5; color: white; }
+.btn-upload:hover { background: #4338ca; }
+
+footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
