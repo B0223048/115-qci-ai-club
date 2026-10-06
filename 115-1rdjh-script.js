@@ -92,9 +92,9 @@ function selectWeek(index) {
 
     var topDiv = document.createElement('div');
     var tag = document.createElement('span');
-    tag.className = 'card-tag tag-task';
-    tag.style.background = '#fef08a';
-    tag.style.color = '#854d0e';
+    tag.className = 'card-tag tag-concept';
+    
+    
     tag.innerText = '概念式學習';
 
     var headerDiv = document.createElement('div');
@@ -129,9 +129,9 @@ function selectWeek(index) {
       btnA.target = '_blank';
       btnA.className = 'card-btn btn-primary';
       btnA.style.marginTop = '0';
-      btnA.style.borderColor = '#fde047';
-      btnA.style.color = '#854d0e';
-      btnA.style.background = '#fef9c3';
+      btnA.style.borderColor = '#BAE6FD';
+      btnA.style.color = '#0369A1';
+      btnA.style.background = '#E0F2FE';
       btnA.style.textAlign = 'left';
       btnA.style.padding = '8px 12px';
 
@@ -142,7 +142,7 @@ function selectWeek(index) {
       if (itemV.desc) {
         var descDiv = document.createElement('div');
         descDiv.style.fontSize = '0.75rem';
-        descDiv.style.color = '#a16207';
+        descDiv.style.color = '#0284C7';
         descDiv.innerText = itemV.desc;
         btnA.appendChild(descDiv);
       }
@@ -185,7 +185,7 @@ function selectWeek(index) {
 
       var gTopDiv = document.createElement('div');
       var gTag = document.createElement('span');
-      gTag.className = 'card-tag tag-exp';
+      gTag.className = 'card-tag tag-experience';
       gTag.innerText = '體驗式學習';
 
       var gHeaderDiv = document.createElement('div');
@@ -220,9 +220,9 @@ function selectWeek(index) {
         gBtnA.target = '_blank';
         gBtnA.className = 'card-btn btn-primary';
         gBtnA.style.marginTop = '0';
-        gBtnA.style.background = '#ede9fe';
-        gBtnA.style.color = '#6d28d9';
-        gBtnA.style.borderColor = '#ddd6fe';
+        gBtnA.style.background = '#D1FAE5';
+        gBtnA.style.color = '#047857';
+        gBtnA.style.borderColor = '#A7F3D0';
         gBtnA.style.textAlign = 'left';
         gBtnA.style.padding = '8px 12px';
 
@@ -233,7 +233,7 @@ function selectWeek(index) {
         if (itemA.desc) {
           var gDescDiv = document.createElement('div');
           gDescDiv.style.fontSize = '0.75rem';
-          gDescDiv.style.color = '#7c3aed';
+          gDescDiv.style.color = '#059669';
           gDescDiv.innerText = itemA.desc;
           gBtnA.appendChild(gDescDiv);
         }

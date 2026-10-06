@@ -154,24 +154,31 @@ header h1 {
   font-size: 0.88rem;
 }
 
-/* 基礎標籤樣式 */
+/* 標籤通用基礎樣式 */
 .card-tag {
   display: inline-block;
-  font-size: 0.75rem;
+  padding: 4px 10px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  border-radius: 9999px;
+  border-width: 1px;
+  border-style: solid;
+  line-height: 1.2;
 }
-.tag-task { background: #fef3c7; color: #b45309; }
-.tag-tool { background: #dcfce7; color: #15803d; }
-.tag-learn { background: #f3e8ff; color: #7e22ce; }
-.tag-upload { background: #e0e7ff; color: #3730a3; }
 
-/* 優化後的專屬標籤配色 */
-.tag-exp { background: #dcfce7; color: #15803d; }     /* 體驗式學習：薄荷青綠 */
-.tag-bot { background: #ede9fe; color: #6d28d9; }     /* AI聊天機器人：優雅藍紫 */
-.tag-project { background: #e0f2fe; color: #0369a1; } /* 國科會計畫：知性天藍 */
+/* 核心與課堂相關 */
+.tag-survey     { background-color: #FFF7ED; color: #C2410C; border-color: #FDBA74; } /* 問卷調查 (暖橘) */
+.tag-companion  { background-color: #F0FDF4; color: #15803D; border-color: #86EFAC; } /* AI學伴系統 (活力草綠) */
+.tag-concept    { background-color: #F0F9FF; color: #0369A1; border-color: #BAE6FD; } /* 概念式學習 (湛藍) */
+.tag-experience { background-color: #ECFDF5; color: #047857; border-color: #A7F3D0; } /* 體驗式學習 (翡翠綠) */
+.tag-tool       { background-color: #EEF2FF; color: #4338CA; border-color: #C7D2FE; } /* 小工具 (靛藍) */
+.tag-class      { background-color: #F1F5F9; color: #475569; border-color: #CBD5E1; } /* 課程平台 (石板灰) */
+
+/* 相關資源區塊 */
+.tag-ai         { background-color: #ECFEFF; color: #0E7490; border-color: #A5F3FC; } /* AI聊天機器人 (青藍) */
+.tag-nstc       { background-color: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; } /* 國科會計畫 (海軍藍) */
+.tag-academy    { background-color: #FEFCE8; color: #A16207; border-color: #FDE047; } /* 國際學院 (暖琥珀) */
+.tag-voice      { background-color: #FFF1F2; color: #BE123C; border-color: #FECDD3; } /* 語音範本 (玫瑰粉) */
 
 .card-btn {
   display: block;
