@@ -46,6 +46,7 @@ const WEEKS_DATA = [
     ],
     apps: [
       { title: '南大台英語 TAIDE 聊天AI機器人', desc: '練習提示詞體驗', url: 'https://kws.oaselab.org/llama-chat/' },
+{ title: 'Goolge Gemini', desc: '練習提示詞體驗', url: 'https://gemini.google.com/app?hl=zh-TW' },
       { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
       { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1kyiLmCLjNWoFOoOBsHI3G8zEv-jNstMI/view?usp=sharing' },
     ]
