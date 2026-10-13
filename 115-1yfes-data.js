@@ -51,4 +51,22 @@ const WEEKS_DATA = [
       { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1kyiLmCLjNWoFOoOBsHI3G8zEv-jNstMI/view?usp=sharing' },
     ]
   },
+      {
+    week: 5,
+    date: '2026 年 10 月 14 日',
+    homeworkDrive: '#',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdUIJR1qYt0sPDgTUDvxo8EtqnUf6EskaqOMJ3w0Lh6yIOTIQ/viewform?usp=dialog',
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSe7NzDw5Cu21UTCD_4FHNo2i_wRqYmc6x9-Rzg66IjHTfuyIA/viewform?usp=dialog',
+    showDataTool: true,
+    videos: [
+      { title: 'TaiMASU校園學生安全示範影片 @ 臺南市仁德國小', desc: '', url: 'https://www.youtube.com/watch?v=skpASJymA3A' },
+      { title: 'TaiMASU 仁德國小場域示範畫面-第一版-1012-2 ', desc: '', url: 'https://www.youtube.com/watch?v=6OwSl-JPwG8' },
+
+    ],
+    apps: [
+      { title: '長者陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
+      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
+      //{ title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1kyiLmCLjNWoFOoOBsHI3G8zEv-jNstMI/view?usp=sharing' },
+    ]
+  },
 ];
