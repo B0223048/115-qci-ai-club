@@ -61,7 +61,7 @@ const WEEKS_DATA = [
       { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1hOlTZfczusZax65su6pNVhjG-b9T1xI6/view?usp=sharing' },
       { title: 'QCI & AI-FML平台', desc: '體驗實作推論模型', url: 'https://kws.oaselab.org/qciai/' },
       { title: 'QCI & AI-FML平台', desc: '下載CI模型', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
-      { title: 'QCI & AI-FML平台', desc: '下載CI模型', url: 'https://docs.google.com/spreadsheets/d/12jxszVbwmQpCAFFqYltZPKQu6mhqJRS9/edit?gid=991754063#gid=991754063' },
+      { title: 'QCI & AI-FML平台', desc: '下載推論資料', url: 'https://docs.google.com/spreadsheets/d/12jxszVbwmQpCAFFqYltZPKQu6mhqJRS9/edit?gid=991754063#gid=991754063' },
     ]
   }
 ];
