@@ -1,39 +1,3 @@
-// ========================================================
-// 【Google Apps Script 即時 API 網址 (0快取)】
-// ========================================================
-var GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwVzvRU3EfAwqt_2fz4ITRmHPy5X7lM3wV1WkOtpBoyONdAbTsFoRAoakNvsKecuYy1/exec';
-
-var REMOTE_SWITCH = {
-  preSurvey: true,
-  postSurvey: false
-};
-
-// 即時取得開關狀態
-function fetchSurveySwitches() {
-  if (!GAS_API_URL || GAS_API_URL.indexOf('AKfycb') === -1) return;
-
-  fetch(GAS_API_URL + '?_t=' + new Date().getTime())
-    .then(function(res) {
-      return res.json();
-    })
-    .then(function(data) {
-      var changed = (REMOTE_SWITCH.preSurvey !== data.preSurvey || REMOTE_SWITCH.postSurvey !== data.postSurvey);
-      REMOTE_SWITCH.preSurvey = data.preSurvey;
-      REMOTE_SWITCH.postSurvey = data.postSurvey;
-
-      if (changed) {
-        var activeBtn = document.querySelector('.week-btn.active');
-        if (activeBtn) {
-          var btns = Array.prototype.slice.call(document.querySelectorAll('.week-btn'));
-          selectWeek(btns.indexOf(activeBtn));
-        }
-      }
-    })
-    .catch(function(err) {
-      console.warn('API 讀取失敗：', err);
-    });
-}
-
 function renderWeekButtons() {
   var list = document.getElementById('weekBtnList');
   list.innerHTML = '';
@@ -67,16 +31,7 @@ function selectWeek(index) {
   // 1. 課堂日期
   document.getElementById('headerDate').innerText = '📅 課堂日期：' + data.date;
 
-  // 2. 課前問卷
-  var preSurveyLink = document.getElementById('preSurveyLink');
-  var preSurveyCard = preSurveyLink ? preSurveyLink.closest('.card') : null;
-  if (REMOTE_SWITCH.preSurvey && data.preSurvey && data.preSurvey.trim() !== '' && data.preSurvey !== '#') {
-    document.getElementById('preSurveyTitle').innerText = '第 ' + data.week + ' 週 課前問卷調查';
-    preSurveyLink.href = data.preSurvey;
-    if (preSurveyCard) preSurveyCard.style.display = 'flex';
-  } else {
-    if (preSurveyCard) preSurveyCard.style.display = 'none';
-  }
+
 
   // 3. 概念式學習 / 影音區塊
   var classCard = document.getElementById('weeklyClassCard');
@@ -248,16 +203,7 @@ function selectWeek(index) {
     }
   }
 
-  // 7. 課後問卷
-  var postSurveyLink = document.getElementById('postSurveyLink');
-  var postSurveyCard = postSurveyLink ? postSurveyLink.closest('.card') : null;
-  if (REMOTE_SWITCH.postSurvey && data.postSurvey && data.postSurvey.trim() !== '' && data.postSurvey !== '#') {
-    document.getElementById('postSurveyTitle').innerText = '第 ' + data.week + ' 週 課後問卷調查';
-    postSurveyLink.href = data.postSurvey;
-    if (postSurveyCard) postSurveyCard.style.display = 'flex';
-  } else {
-    if (postSurveyCard) postSurveyCard.style.display = 'none';
-  }
+
 }
 
 window.addEventListener('DOMContentLoaded', renderWeekButtons);

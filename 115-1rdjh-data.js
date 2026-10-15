@@ -49,16 +49,19 @@ const WEEKS_DATA = [
   {
     week: 5,
     date: '2026 年 10 月 16 日',
-    preSurvey: '', // 填入問卷網址
-    postSurvey: '',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSds8wf1yXaLD0Dgo1cUlP1xdhdbTwkm_MTD5FXv6RxwShBKKg/viewform?usp=dialog', 
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdU0XEPcLvpnDxx9UeHiD09b6f3rbAgX87bNyOYT1KJK6eZDw/viewform?usp=dialog',
     videos: [
-      // { title: 'GAI概念式學習影片 I', desc: '', url: '', btnText: '觀看影片 I' },
-      // { title: 'GAI概念式學習影片 II', desc: '', url: '', btnText: '觀看影片 II' },
-      // { title: 'GAI概念式學習影片 III', desc: '', url: '', btnText: '觀看影片 III' }
+      { title: '11242023-設計女媧實驗室積木派發至Kebbi Air機器人@臺南市仁德國小資訊課(No. 2)', desc: '', url: 'https://youtu.be/QWmzoRRiJt0', btnText: '觀看影片 I' },
+      { title: '08232022-CI&AI-FML Metaverse課程(單元2-2)', desc: '', url: '', btnText: 'https://youtu.be/QWmzoRRiJt0' },
+  
     ],
     apps: [
-      // { title: 'GAI 體驗式學習應用 I', desc: '', url: '', btnText: '開始體驗 I' },
-      // { title: 'GAI 體驗式學習應用 II', desc: '', url: '', btnText: '開始體驗 II' }
+      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
+      { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1hOlTZfczusZax65su6pNVhjG-b9T1xI6/view?usp=sharing' },
+      { title: 'QCI & AI-FML平台', desc: '體驗實作推論模型', url: 'https://kws.oaselab.org/qciai/' },
+      { title: 'QCI & AI-FML平台', desc: '下載CI模型', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
+      { title: 'QCI & AI-FML平台', desc: '下載CI模型', url: 'https://docs.google.com/spreadsheets/d/12jxszVbwmQpCAFFqYltZPKQu6mhqJRS9/edit?gid=991754063#gid=991754063' },
     ]
   }
 ];
