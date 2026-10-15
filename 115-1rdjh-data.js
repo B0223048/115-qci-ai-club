@@ -53,7 +53,7 @@ const WEEKS_DATA = [
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdU0XEPcLvpnDxx9UeHiD09b6f3rbAgX87bNyOYT1KJK6eZDw/viewform?usp=dialog',
     videos: [
       { title: '11242023-設計女媧實驗室積木派發至Kebbi Air機器人@臺南市仁德國小資訊課(No. 2)', desc: '', url: 'https://youtu.be/QWmzoRRiJt0', btnText: '觀看影片 I' },
-      { title: '08232022-CI&AI-FML Metaverse課程(單元2-2)', desc: '', url: 'https://youtu.be/QWmzoRRiJt0', btnText: '' },
+      { title: '08232022-CI&AI-FML Metaverse課程(單元2-2)', desc: '', url: 'https://youtu.be/799_LxL914M?si=5imglm7uEulWgDxu', btnText: '' },
   
     ],
     apps: [
