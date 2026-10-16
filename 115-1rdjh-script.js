@@ -16,7 +16,6 @@ function renderWeekButtons() {
   }
 
   selectWeek(WEEKS_DATA.length - 1);
-  fetchSurveySwitches();
 }
 
 function selectWeek(index) {
@@ -32,6 +31,28 @@ function selectWeek(index) {
   document.getElementById('headerDate').innerText = '📅 課堂日期：' + data.date;
 
 
+
+  // 2.更新問卷按鈕連結與顯示狀態
+  var preBtn = document.getElementById('preSurveyLink');
+  var postBtn = document.getElementById('postSurveyLink');
+  
+  if (preBtn) {
+    if (data.preSurvey && data.preSurvey !== '#') {
+      preBtn.href = data.preSurvey;
+      preBtn.style.display = 'block';
+    } else {
+      preBtn.style.display = 'none';
+    }
+  }
+
+  if (postBtn) {
+    if (data.postSurvey && data.postSurvey !== '#') {
+      postBtn.href = data.postSurvey;
+      postBtn.style.display = 'block';
+    } else {
+      postBtn.style.display = 'none';
+    }
+  }
 
   // 3. 概念式學習 / 影音區塊
   var classCard = document.getElementById('weeklyClassCard');

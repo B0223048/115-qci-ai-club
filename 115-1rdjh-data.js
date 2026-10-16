@@ -52,16 +52,17 @@ const WEEKS_DATA = [
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSds8wf1yXaLD0Dgo1cUlP1xdhdbTwkm_MTD5FXv6RxwShBKKg/viewform?usp=dialog', 
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdU0XEPcLvpnDxx9UeHiD09b6f3rbAgX87bNyOYT1KJK6eZDw/viewform?usp=dialog',
     videos: [
-      { title: '11242023-設計女媧實驗室積木派發至Kebbi Air機器人@臺南市仁德國小資訊課(No. 2)', desc: '', url: 'https://youtu.be/QWmzoRRiJt0', btnText: '觀看影片 I' },
       { title: '臺南大學、遊戲公司合作 研發AI虛擬機器人 | 公視台語台 | 20241024', desc: '', url: 'https://youtu.be/gF3bSUDE_SQ', btnText: '' },
       { title: 'TaiMASU 仁德國小場域示範畫面-第一版-1012-2 ', desc: '', url: 'https://www.youtube.com/watch?v=6OwSl-JPwG8' },
-      { title: '8.  11202024_台英慧環遊台灣品論地方小吃 by Yu-Hsiang Lee (Version 1-No. 1)', desc: '', url: 'https://www.youtube.com/watch?v=R5gDe5l9YKI&list=PLVf2n3pM4O3FO8c5ysLJnEmse61sAhB5c' },
+      { title: '11202024_台英慧環遊台灣品論地方小吃 by Yu-Hsiang Lee (Version 1-No. 1)', desc: '', url: 'https://www.youtube.com/watch?v=R5gDe5l9YKI&list=PLVf2n3pM4O3FO8c5ysLJnEmse61sAhB5c' },
+      { title: '11242023-設計女媧實驗室積木派發至Kebbi Air機器人@臺南市仁德國小資訊課(No. 2)', desc: '', url: 'https://youtu.be/QWmzoRRiJt0', btnText: '觀看影片 I' },
     ],
     apps: [
-      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
-      { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1hOlTZfczusZax65su6pNVhjG-b9T1xI6/view?usp=sharing' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
       { title: '長者陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
+      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
+      { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1hOlTZfczusZax65su6pNVhjG-b9T1xI6/view?usp=sharing' },
+
       //{ title: 'QCI & AI-FML平台', desc: '下載CI模型', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       //{ title: 'QCI & AI-FML平台', desc: '下載推論資料', url: 'https://docs.google.com/spreadsheets/d/12jxszVbwmQpCAFFqYltZPKQu6mhqJRS9/edit?gid=991754063#gid=991754063' },
     ]
