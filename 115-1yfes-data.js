@@ -84,6 +84,7 @@ const WEEKS_DATA = [
       { title: '透過MQTT串接硬體學習工具與QCI&AI平台', desc: '前往QCI&AI平台', url: 'https://kws.oaselab.org/qciai/' },
       { title: '下載CI推論模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
+      { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },      
           ]
   },
 ];
