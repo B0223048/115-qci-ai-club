@@ -74,7 +74,7 @@ const WEEKS_DATA = [
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfLK7IByADK7bvezQEB3CTC1XcjCch31xtIeFbyveAbWJtNbg/viewform?usp=dialog',
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSebIoyoVwbHOPK9Enr2NIYXupJBPYcIeA8toKCFMbLNEFcWIg/viewform',
     showDataTool: false,
-    companionLesson: '本週任務：3年級 去旅行',
+    companionLesson: '本週任務：3年級 露營',
     videos: [
       { title: 'QCI Data Model (Hardware)', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/activities-in-taiwan/activity-2026/mphd-ai-camp/mphd_stage1_2_main' },
       { title: '02242026-Stages III: QCI Inference Model by Chao-Cyuan Yue ', desc: '', url: 'https://youtu.be/TjavobkMQsk?si=yY0z7mrFOlhYqFJc&t=104' },
