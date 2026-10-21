@@ -38,7 +38,7 @@ const WEEKS_DATA = [
     homeworkDrive: '#',
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdnbpg_VsSSHFb5NT2Zlj9DEMoqGtsbdLwDaG7IH9F-hQ1spw/viewform?usp=dialog',
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfi9muzZksURqqTQ4Q8VYEEllM1rHc-mXy-AsfHfh5n9rZBcQ/viewform?usp=dialog',
-    showDataTool: true,
+    showDataTool: false,
     videos: [
       { title: '10272025-南大TAIDE大型語言模型台英語對話機器人對話 (TAIDE 70B + RAG)', desc: '', url: 'https://youtu.be/a1sEcMhc4OI' },
       { title: '11242023-設計女媧實驗室積木派發至Kebbi Air 機器人 @ 臺南市仁德國小資訊課(No. 2) ', desc: '', url: 'https://youtu.be/QWmzoRRiJt0' },
@@ -57,7 +57,7 @@ const WEEKS_DATA = [
     homeworkDrive: '#',
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdUIJR1qYt0sPDgTUDvxo8EtqnUf6EskaqOMJ3w0Lh6yIOTIQ/viewform?usp=dialog',
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSe7NzDw5Cu21UTCD_4FHNo2i_wRqYmc6x9-Rzg66IjHTfuyIA/viewform?usp=dialog',
-    showDataTool: true,
+    showDataTool: false,
     videos: [
       { title: 'TaiMASU校園學生安全示範影片 @ 臺南市仁德國小', desc: '', url: 'https://www.youtube.com/watch?v=skpASJymA3A' },
       { title: 'TaiMASU 仁德國小場域示範畫面-第一版-1012-2 ', desc: '', url: 'https://www.youtube.com/watch?v=6OwSl-JPwG8' },
@@ -65,8 +65,25 @@ const WEEKS_DATA = [
     ],
     apps: [
       { title: '長者陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
-      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
-      //{ title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1kyiLmCLjNWoFOoOBsHI3G8zEv-jNstMI/view?usp=sharing' },
-    ]
+        ]
+  },
+  {
+    week: 6,
+    date: '2026 年 10 月 21 日',
+    homeworkDrive: '#',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSfLK7IByADK7bvezQEB3CTC1XcjCch31xtIeFbyveAbWJtNbg/viewform?usp=dialog',
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSebIoyoVwbHOPK9Enr2NIYXupJBPYcIeA8toKCFMbLNEFcWIg/viewform',
+    showDataTool: false,
+    companionLesson: '本週任務：3年級 去旅行',
+    videos: [
+      { title: 'QCI Data Model (Hardware)', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/activities-in-taiwan/activity-2026/mphd-ai-camp/mphd_stage1_2_main' },
+      { title: '02242026-Stages III: QCI Inference Model by Chao-Cyuan Yue ', desc: '', url: 'https://youtu.be/TjavobkMQsk?si=yY0z7mrFOlhYqFJc&t=104' },
+
+    ],
+    apps: [
+      { title: '透過MQTT串接硬體學習工具與QCI&AI平台', desc: '前往QCI&AI平台', url: 'https://kws.oaselab.org/qciai/' },
+      { title: '下載CI推論模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
+      { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
+          ]
   },
 ];
