@@ -82,9 +82,31 @@ const WEEKS_DATA = [
     ],
     apps: [
       { title: '透過MQTT串接硬體學習工具與QCI&AI平台', desc: '前往QCI&AI平台', url: 'https://kws.oaselab.org/qciai/' },
-      { title: '下載CI推論模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
+      { title: '下載CI模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
       { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },      
+          ]
+  },
+    {
+    week: 7,
+    date: '2026 年 10 月 28 日',
+    homeworkDrive: 'https://drive.google.com/drive/folders/1GiTFKTvfriDOtd35jOQc4WubpCSQ0tT0?usp=sharing',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSf2CAFuptuSE_U4nrfRqL4LBBj-a42SQoqCsrH_7JCiT9fx4g/viewform?usp=dialog',
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLScFaGsJ80MXDYnzRuEoc0dezVWrh3wNO5NetQeYaN9pSJTymg/viewform?usp=dialog',
+    showDataTool: true,
+    companionLesson: '本週任務：4年級 辦桌/4年級 便利商店',
+    videos: [
+      { title: '02242026-Stages IV: QCI Fine-Tuned Model by Chao-Cyuan Yue Part. 2', desc: '', url: 'https://www.youtube.com/watch?v=uL4gNwHdDGQ' },
+      { title: 'AI-FML人機共學機器學習-第四單元 ', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/ai-fml-online-class/%E7%AC%AC%E5%9B%9B%E5%96%AE%E5%85%83' },
+      { title: 'Stages IV to V: 微調模型及體驗量子模糊推論 ', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/activities-in-taiwan/activity-2026/mphd-ai-camp/stages-iv-to-v' },
+
+    ],
+    apps: [
+      { title: 'QCI&AI平台', desc: '微調模型訓練', url: 'https://kws.oaselab.org/qciai/' },
+      { title: '下載CI模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
+      { title: '下載CI訓練資料', desc: 'QCI & AI 平台', url: 'https://docs.google.com/spreadsheets/d/1Mui-srb75_gPsaMrKV-DyeLmN8kMYr8W/edit?gid=2020816129#gid=2020816129' },
+      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
+
           ]
   },
 ];
