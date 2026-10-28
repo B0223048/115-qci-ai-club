@@ -104,7 +104,8 @@ const WEEKS_DATA = [
     apps: [
       { title: 'QCI&AI平台', desc: '微調模型訓練', url: 'https://kws.oaselab.org/qciai/' },
       { title: '下載CI模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
-      { title: '下載CI訓練資料', desc: 'QCI & AI 平台', url: 'https://docs.google.com/spreadsheets/d/1Mui-srb75_gPsaMrKV-DyeLmN8kMYr8W/edit?gid=2020816129#gid=2020816129' },
+      { title: '下載微CI調模型訓練資料', desc: 'TrainingData(GAIFit)加入同學9月資料模型', url: 'https://drive.google.com/drive/folders/1IRm8hHcInsG2C_XIBFHlvdMB_C1dzQSr?usp=sharing' },
+      { title: '下載微CI調模型訓練資料', desc: 'TrainingData(GAIFit)', url: 'https://docs.google.com/spreadsheets/d/1Mui-srb75_gPsaMrKV-DyeLmN8kMYr8W/edit?gid=2020816129#gid=2020816129' },
       { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
 
           ]
