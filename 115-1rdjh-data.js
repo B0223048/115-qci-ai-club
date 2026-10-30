@@ -78,9 +78,6 @@ const WEEKS_DATA = [
 
     ],
     apps: [
-      { title: '女媧實驗室', desc: '積木程式應用', url: 'https://codelab.nuwarobotics.com/koding/file' },
-      { title: '女媧實驗室積木程式應用範例', desc: '於雲端硬碟下載範例於女媧實驗室使用', url: 'https://drive.google.com/file/d/1hOlTZfczusZax65su6pNVhjG-b9T1xI6/view?usp=sharing' },
-
       { title: 'QCI & AI 平台', desc: '前往 QCI&AI 平台', url: 'https://kws.oaselab.org/qciai/' },
       { title: '下載CI模型', desc: '用於 QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
