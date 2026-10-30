@@ -81,7 +81,8 @@ const WEEKS_DATA = [
       { title: 'QCI & AI 平台', desc: '前往 QCI&AI 平台', url: 'https://kws.oaselab.org/qciai/' },
       { title: '下載CI模型', desc: '用於 QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
-      { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },   
+      { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },
+      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
     ]
   },
 /*    {
@@ -100,6 +101,7 @@ const WEEKS_DATA = [
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
       { title: '長者陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
       { title: '智慧型陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian/' },
+      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
     ],
   },*/
 ];
