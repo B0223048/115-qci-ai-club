@@ -74,24 +74,44 @@ const WEEKS_DATA = [
     showDataTool: true,
     videos: [
       { title: 'QCI Data Model (Hardware)', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/activities-in-taiwan/activity-2026/mphd-ai-camp/mphd_stage1_2_main' },
-      { title: '02242026-Stages III: QCI Inference Model by Chao-Cyuan Yue ', desc: '', url: 'https://youtu.be/TjavobkMQsk?si=yY0z7mrFOlhYqFJc&t=104' },
+      { title: '02242026-Stages III: QCI Inference Model by Chao-Cyuan Yue ', desc: '', url: 'https://youtu.be/TjavobkMQsk?t=104' },
 
     ],
     apps: [
       { title: 'QCI & AI 平台', desc: '前往 QCI&AI 平台', url: 'https://kws.oaselab.org/qciai/' },
       { title: '下載CI模型', desc: '用於 QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
-      { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },
-      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
+      { title: 'Thonny', desc: '下載編譯器', url: 'https://thonny.org/' },   
     ]
   },
+    {
+    week: '7',
+    date: '2026 年 11 月 6 日',
+    preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSe7bXUfeIISMSv6onZkR9yh7cyvDfz6wzfcZWpIG4Tfe9c-jQ/viewform?usp=dialog', 
+    postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSdKKuXRH2fPpRSVMYqufe6CBfJXiRwK9rWbE2WZRkNZIrhGXw/viewform?usp=dialog',
+
+    showDataTool: false,
+    videos: [
+      { title: '02242026-Stages IV: QCI Fine-Tuned Model by Chao-Cyuan Yue Part. 2', desc: '', url: 'https://www.youtube.com/watch?v=uL4gNwHdDGQ' },
+      { title: 'Stages IV to V: 微調模型及體驗量子模糊推論 ', desc: '', url: 'https://sites.google.com/asap.nutn.edu.tw/ai-fml-international-academy/activities-in-taiwan/activity-2026/mphd-ai-camp/stages-iv-to-v' },
+
+    ],
+    apps: [
+      { title: 'QCI&AI平台', desc: '微前往 QCI&AI 平台', url: 'https://kws.oaselab.org/qciai/' },
+      { title: '下載CI模型', desc: 'QCI & AI 平台', url: 'https://drive.google.com/file/d/1j8w4kGbYBAghsTsszwMvum6WuTtrqYXi/view' },
+      { title: '下載微CI調模型訓練資料', desc: 'TrainingData(GAIFit)加入同學9月資料模型', url: 'https://drive.google.com/drive/folders/1Lh8CFiG8_9lU3kPnt-jzl0NHTFZ-x4yV?usp=sharing' },
+      { title: '下載微CI調模型訓練資料', desc: 'TrainingData(GAIFit)', url: 'https://docs.google.com/spreadsheets/d/1Mui-srb75_gPsaMrKV-DyeLmN8kMYr8W/edit?gid=2020816129#gid=2020816129' },
+      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
+
+          ]
+  },  
 /*    {
-    week: '6a',
-    date: '2026 年 10 月 30 日',
+    week: '7a',//原6a 每次編號都順移一位
+    date: '2026 年 11 月 6 日',
     preSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSetTnXS0IJLvl-ucEnNRpX70pPba0hMy642QdiydAShGLw6dQ/viewform?usp=dialog', 
     postSurvey: 'https://docs.google.com/forms/d/e/1FAIpQLSf1eAFrzfUcSRMBkg7Eeo3xX9ph5goE2y8HpK2uECLN-h7TdQ/viewform?usp=dialog',
-    companionLesson: '本週任務：5年級 線頂買賣',
-    showDataTool: true,
+    companionLesson: '本週任務：n/a',
+    showDataTool: false,
     videos: [
       { title: '臺南大學、遊戲公司合作 研發AI虛擬機器人 | 公視台語台 | 20241024', desc: '', url: 'https://youtu.be/gF3bSUDE_SQ'},
       { title: '10292026- 智慧陪伴機器人展示測試(使用義隆電子網路攝影機 - No. 4)', desc: '', url: 'https://youtu.be/OaCIRbtmhy0' },
@@ -101,7 +121,6 @@ const WEEKS_DATA = [
       { title: '台英慧', desc: '虛擬人物互動', url: 'https://kws.oaselab.org/t-alice-v2/' },
       { title: '長者陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian-nchc/' },
       { title: '智慧型陪伴機器人', desc: '多模態AI互動體驗', url: 'https://kws.oaselab.org/ai-guardian/' },
-      { title: '全國AI專題競賽-Quantum AI 體驗應用組', desc: '歡迎有興趣同學報名參加', url: 'https://sites.google.com/asap.nutn.edu.tw/2026quantumai/home' },
     ],
   },*/
 ];
